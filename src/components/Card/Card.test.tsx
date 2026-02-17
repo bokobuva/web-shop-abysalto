@@ -8,22 +8,24 @@ describe("Card", () => {
     title: "Test Product",
     description: "Short description",
     image: "https://example.com/image.jpg",
+    price: 9.99,
     onClick: jest.fn(),
   };
 
-  it("renders title and description", () => {
+  it("renders title, description, and price", () => {
     render(<Card {...defaultProps} />);
     expect(screen.getByText("Test Product")).toBeInTheDocument();
     expect(screen.getByText("Short description")).toBeInTheDocument();
+    expect(screen.getByText("$9.99")).toBeInTheDocument();
   });
 
-  it("truncates description to 250 characters by default", () => {
-    const longDescription = "a".repeat(300);
+  it("truncates description to 100 characters by default", () => {
+    const longDescription = "a".repeat(150);
     render(<Card {...defaultProps} description={longDescription} />);
-    expect(screen.getByText(`${"a".repeat(250)}...`)).toBeInTheDocument();
+    expect(screen.getByText(`${"a".repeat(100)}...`)).toBeInTheDocument();
   });
 
-  it("does not truncate description under 250 characters", () => {
+  it("does not truncate description under 100 characters", () => {
     const shortDesc = "Short";
     render(<Card {...defaultProps} description={shortDesc} />);
     expect(screen.getByText("Short")).toBeInTheDocument();

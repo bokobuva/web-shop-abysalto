@@ -6,12 +6,13 @@ type CardProps = {
   title: string;
   description: string;
   image: string;
+  price: number;
   onClick: () => void;
   maxDescriptionLength?: number;
   id?: string;
 };
 
-const DEFAULT_MAX_DESCRIPTION_LENGTH = 250;
+const DEFAULT_MAX_DESCRIPTION_LENGTH = 100;
 
 const truncateDescription = (
   description: string,
@@ -25,6 +26,7 @@ export const Card: React.FC<CardProps> = ({
   title,
   description,
   image,
+  price,
   onClick,
   maxDescriptionLength = DEFAULT_MAX_DESCRIPTION_LENGTH,
   id,
@@ -43,14 +45,23 @@ export const Card: React.FC<CardProps> = ({
       data-testid="card"
       aria-labelledby={titleId}
     >
-      <Image src={image} alt={title} width={100} height={100} />
+      <Image
+        src={image}
+        alt={title}
+        width={200}
+        height={200}
+        className="ml-auto mr-auto"
+      />
       <h2 id={titleId} className="mt-2 font-semibold">
         {title}
       </h2>
       <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
         {truncatedDescription}
       </p>
-      <div className="mt-4 flex justify-end">
+      <div className="mt-4 flex items-center justify-between">
+        <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+          ${price.toFixed(2)}
+        </p>
         <Button
           label="Details"
           onClick={onClick}

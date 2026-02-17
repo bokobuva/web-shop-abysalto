@@ -14,9 +14,11 @@ const meta = {
     title: { control: "text" },
     description: { control: "text" },
     image: { control: "text" },
+    price: { control: "number" },
     maxDescriptionLength: { control: "number" },
   },
   args: {
+    price: 9.99,
     onClick: fn(),
   },
 } satisfies Meta<typeof Card>;

@@ -72,6 +72,7 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
           title={product.name}
           description={product.description}
           image={product.image}
+          price={product.price}
           onClick={() => onProductClick?.(product)}
         />
       ))}
