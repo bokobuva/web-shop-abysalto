@@ -7,6 +7,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import productsReducer from "@/store/productsSlice";
 import categoriesReducer from "@/store/categoriesSlice";
 import filtersReducer from "@/store/filtersSlice";
+import sortReducer from "@/store/sortSlice";
 
 import { Filters } from "./Filters";
 
@@ -24,6 +25,7 @@ const createStore = (filtersState?: {
       products: productsReducer,
       categories: categoriesReducer,
       filters: filtersReducer,
+      sort: sortReducer,
     },
     preloadedState: {
       categories: {
@@ -40,6 +42,7 @@ const createStore = (filtersState?: {
         categorySlug: null,
         priceRangeId: null,
       },
+      sort: { sortOptionId: "default" },
     },
   });
 

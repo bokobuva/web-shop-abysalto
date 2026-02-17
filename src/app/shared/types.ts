@@ -19,3 +19,13 @@ export const PRICE_RANGES = [
 ] as const;
 
 export type PriceRangeId = (typeof PRICE_RANGES)[number]["id"];
+
+export const SORT_OPTIONS = [
+  { id: "default", label: "Default" },
+  { id: "price-asc", label: "Price: Low to High" },
+  { id: "price-desc", label: "Price: High to Low" },
+  { id: "name-asc", label: "Name: A to Z" },
+  { id: "name-desc", label: "Name: Z to A" },
+] as const;
+
+export type SortOptionId = (typeof SORT_OPTIONS)[number]["id"];

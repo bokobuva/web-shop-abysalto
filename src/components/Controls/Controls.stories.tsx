@@ -10,7 +10,7 @@ import categoriesReducer from "@/store/categoriesSlice";
 import filtersReducer from "@/store/filtersSlice";
 import sortReducer from "@/store/sortSlice";
 
-import { Filters } from "./Filters";
+import { Controls } from "./Controls";
 
 const mockCategories = [
   { slug: "beauty", name: "Beauty" },
@@ -19,9 +19,9 @@ const mockCategories = [
   { slug: "groceries", name: "Groceries" },
 ];
 
-const createStore = (filtersState?: {
-  categorySlug: string | null;
-  priceRangeId: PriceRangeId | null;
+const createStore = (preloadedState?: {
+  filters?: { categorySlug: string | null; priceRangeId: PriceRangeId | null };
+  sort?: { sortOptionId: string };
 }) =>
   configureStore({
     reducer: {
@@ -41,17 +41,17 @@ const createStore = (filtersState?: {
         isLoading: false,
         error: null,
       },
-      filters: filtersState ?? {
+      filters: preloadedState?.filters ?? {
         categorySlug: null,
         priceRangeId: null,
       },
-      sort: { sortOptionId: "default" },
+      sort: preloadedState?.sort ?? { sortOptionId: "default" },
     },
   });
 
-const meta: Meta<typeof Filters> = {
-  title: "Components/Filters",
-  component: Filters,
+const meta: Meta<typeof Controls> = {
+  title: "Components/Controls",
+  component: Controls,
   parameters: {
     layout: "padded",
   },
@@ -69,39 +69,3 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
-
-export const WithCategorySelected: Story = {
-  decorators: [
-    (Story) => (
-      <Provider
-        store={createStore({ categorySlug: "beauty", priceRangeId: null })}
-      >
-        <Story />
-      </Provider>
-    ),
-  ],
-};
-
-export const WithPriceRangeSelected: Story = {
-  decorators: [
-    (Story) => (
-      <Provider
-        store={createStore({ categorySlug: null, priceRangeId: "10-50" })}
-      >
-        <Story />
-      </Provider>
-    ),
-  ],
-};
-
-export const WithAllFiltersSelected: Story = {
-  decorators: [
-    (Story) => (
-      <Provider
-        store={createStore({ categorySlug: "furniture", priceRangeId: "100+" })}
-      >
-        <Story />
-      </Provider>
-    ),
-  ],
-};

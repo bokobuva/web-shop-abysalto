@@ -1,14 +1,14 @@
-import { filterProducts } from "@/lib/filters/filterProducts";
-
 import { store } from "./index";
 import {
   setProducts,
   setCategory,
   setPriceRange,
   setCategories,
+  setSortOption,
 } from "./index";
 import {
   selectFilteredProducts,
+  selectFilteredAndSortedProducts,
   selectProducts,
   selectCategories,
   selectFilters,
@@ -38,6 +38,7 @@ describe("selectors", () => {
     store.dispatch(setProducts(mockProducts));
     store.dispatch(setCategory(null));
     store.dispatch(setPriceRange(null));
+    store.dispatch(setSortOption("default"));
   });
 
   describe("selectFilteredProducts", () => {
@@ -95,6 +96,53 @@ describe("selectors", () => {
         categorySlug: "beauty",
         priceRangeId: "50-100",
       });
+    });
+  });
+
+  describe("selectFilteredAndSortedProducts", () => {
+    it("returns filtered products in default order when sort is default", () => {
+      const state = store.getState();
+      const result = selectFilteredAndSortedProducts(state);
+      expect(result).toHaveLength(2);
+      expect(result[0].name).toBe("Product A");
+      expect(result[1].name).toBe("Product B");
+    });
+
+    it("sorts by price ascending when price-asc", () => {
+      store.dispatch(setSortOption("price-asc"));
+      const state = store.getState();
+      const result = selectFilteredAndSortedProducts(state);
+      expect(result.map((p) => p.price)).toEqual([25, 75]);
+    });
+
+    it("sorts by price descending when price-desc", () => {
+      store.dispatch(setSortOption("price-desc"));
+      const state = store.getState();
+      const result = selectFilteredAndSortedProducts(state);
+      expect(result.map((p) => p.price)).toEqual([75, 25]);
+    });
+
+    it("sorts by name A-Z when name-asc", () => {
+      store.dispatch(setSortOption("name-asc"));
+      const state = store.getState();
+      const result = selectFilteredAndSortedProducts(state);
+      expect(result.map((p) => p.name)).toEqual(["Product A", "Product B"]);
+    });
+
+    it("sorts by name Z-A when name-desc", () => {
+      store.dispatch(setSortOption("name-desc"));
+      const state = store.getState();
+      const result = selectFilteredAndSortedProducts(state);
+      expect(result.map((p) => p.name)).toEqual(["Product B", "Product A"]);
+    });
+
+    it("filters and sorts together", () => {
+      store.dispatch(setCategory("beauty"));
+      store.dispatch(setSortOption("price-desc"));
+      const state = store.getState();
+      const result = selectFilteredAndSortedProducts(state);
+      expect(result).toHaveLength(1);
+      expect(result[0].name).toBe("Product A");
     });
   });
 });

@@ -1,6 +1,6 @@
 "use client";
 
-import { Filters } from "@/components/Filters";
+import { Controls } from "@/components/Controls";
 import { ConnectedProductsGrid } from "@/components/ProductsGrid/ConnectedProductsGrid";
 import { useSyncProductsToRedux } from "@/hooks/useSyncProductsToRedux";
 
@@ -16,7 +16,7 @@ export default function Home() {
         <h1 className="mb-8 text-3xl font-semibold tracking-tight text-black dark:text-zinc-50">
           Abysalto&apos;s Web Shop
         </h1>
-        <Filters />
+        <Controls />
         <div className="mt-8">
           <ConnectedProductsGrid />
         </div>

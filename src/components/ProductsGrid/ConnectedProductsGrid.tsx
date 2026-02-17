@@ -3,7 +3,7 @@
 import { useSelector } from "react-redux";
 
 import {
-  selectFilteredProducts,
+  selectFilteredAndSortedProducts,
   selectProductsError,
   selectProductsLoading,
 } from "@/store";
@@ -11,7 +11,7 @@ import {
 import { ProductsGrid } from "./ProductsGrid";
 
 export const ConnectedProductsGrid: React.FC = () => {
-  const products = useSelector(selectFilteredProducts);
+  const products = useSelector(selectFilteredAndSortedProducts);
   const isLoading = useSelector(selectProductsLoading);
   const error = useSelector(selectProductsError);
 
