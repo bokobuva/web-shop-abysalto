@@ -68,6 +68,7 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
       {products.map((product) => (
         <Card
           key={product.id}
+          id={product.id}
           title={product.name}
           description={product.description}
           image={product.image}

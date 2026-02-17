@@ -21,7 +21,7 @@ export const Button: React.FC<ButtonProps> = ({
       data-testid={dataTestId}
       aria-label={ariaLabel}
       aria-disabled={disabled}
-      className="rounded px-4 py-2 font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+      className="cursor-pointer rounded-lg border border-gray-200 px-4 py-2 font-medium transition duration-100 ease-in-out hover:enabled:scale-[1.08] focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700"
     >
       {label}
     </button>

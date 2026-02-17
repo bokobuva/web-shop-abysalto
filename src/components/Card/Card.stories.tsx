@@ -53,12 +53,13 @@ export const LongDescription: Story = {
   },
 };
 
-export const AtExactly100Chars: Story = {
+export const AtExactly250Chars: Story = {
   args: {
-    title: "Boundary Test",
+    title: "Boundary Test 250",
     description:
-      "Exactly 100 characters: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore.",
+      "Exactly 250 characters: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo. Duis",
     image: DUMMY_IMAGE,
+    maxDescriptionLength: 250,
   },
 };
 

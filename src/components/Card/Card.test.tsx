@@ -17,13 +17,13 @@ describe("Card", () => {
     expect(screen.getByText("Short description")).toBeInTheDocument();
   });
 
-  it("truncates description to 100 characters by default", () => {
-    const longDescription = "a".repeat(150);
+  it("truncates description to 250 characters by default", () => {
+    const longDescription = "a".repeat(300);
     render(<Card {...defaultProps} description={longDescription} />);
-    expect(screen.getByText(`${"a".repeat(100)}...`)).toBeInTheDocument();
+    expect(screen.getByText(`${"a".repeat(250)}...`)).toBeInTheDocument();
   });
 
-  it("does not truncate description under 100 characters", () => {
+  it("does not truncate description under 250 characters", () => {
     const shortDesc = "Short";
     render(<Card {...defaultProps} description={shortDesc} />);
     expect(screen.getByText("Short")).toBeInTheDocument();
@@ -37,7 +37,20 @@ describe("Card", () => {
     expect(screen.getByText(`${"a".repeat(50)}...`)).toBeInTheDocument();
   });
 
-  it("calls onClick when clicked", async () => {
+  it("renders Details button with accessibility attributes", () => {
+    render(<Card {...defaultProps} />);
+    const detailsButton = screen.getByRole("button", {
+      name: /view details for test product/i,
+    });
+    expect(detailsButton).toHaveAttribute("data-testid", "card-details-button");
+    expect(detailsButton).toHaveAttribute(
+      "aria-label",
+      "View details for Test Product",
+    );
+    expect(detailsButton).toHaveTextContent("Details");
+  });
+
+  it("calls onClick when Details button is clicked", async () => {
     const onClick = jest.fn();
     render(<Card {...defaultProps} onClick={onClick} />);
     await userEvent.click(
@@ -46,13 +59,13 @@ describe("Card", () => {
     expect(onClick).toHaveBeenCalledTimes(1);
   });
 
-  it("calls onClick on Enter key", async () => {
+  it("calls onClick when Enter is pressed on Details button", async () => {
     const onClick = jest.fn();
     render(<Card {...defaultProps} onClick={onClick} />);
-    const card = screen.getByRole("button", {
+    const detailsButton = screen.getByRole("button", {
       name: /view details for test product/i,
     });
-    card.focus();
+    detailsButton.focus();
     await userEvent.keyboard("{Enter}");
     expect(onClick).toHaveBeenCalledTimes(1);
   });
