@@ -23,7 +23,7 @@ export const Filters: React.FC = () => {
   return (
     <section
       aria-label="Product filters"
-      className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-900"
+      className="flex h-full min-h-0 flex-1 flex-col rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-900"
     >
       <h2 className="mb-3 text-lg font-semibold text-gray-900 dark:text-zinc-50">
         Filters

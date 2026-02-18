@@ -4,6 +4,7 @@ import productsReducer from "@/store/productsSlice";
 import categoriesReducer from "@/store/categoriesSlice";
 import filtersReducer from "@/store/filtersSlice";
 import sortReducer from "@/store/sortSlice";
+import searchReducer from "@/store/searchSlice";
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
     categories: categoriesReducer,
     filters: filtersReducer,
     sort: sortReducer,
+    search: searchReducer,
   },
 });
 
@@ -29,4 +31,5 @@ export {
 } from "@/store/categoriesSlice";
 export { setCategory, setPriceRange, resetFilters } from "@/store/filtersSlice";
 export { setSortOption } from "@/store/sortSlice";
+export { setSearchQuery } from "@/store/searchSlice";
 export * from "@/store/selectors";

@@ -3,10 +3,13 @@ import { Provider } from "react-redux";
 
 import { configureStore } from "@reduxjs/toolkit";
 
+import type { SortOptionId } from "@/app/shared/types";
+
 import productsReducer from "@/store/productsSlice";
 import categoriesReducer from "@/store/categoriesSlice";
 import filtersReducer from "@/store/filtersSlice";
 import sortReducer from "@/store/sortSlice";
+import searchReducer from "@/store/searchSlice";
 
 import { Controls } from "@/components/Controls";
 
@@ -22,6 +25,7 @@ const createStore = () =>
       categories: categoriesReducer,
       filters: filtersReducer,
       sort: sortReducer,
+      search: searchReducer,
     },
     preloadedState: {
       categories: {
@@ -38,7 +42,8 @@ const createStore = () =>
         categorySlug: null,
         priceRangeId: null,
       },
-      sort: { sortOptionId: "default" },
+      sort: { sortOptionId: "default" as SortOptionId },
+      search: { searchQuery: "" },
     },
   });
 
@@ -57,15 +62,18 @@ describe("Controls", () => {
     ).toBeInTheDocument();
   });
 
-  it("renders SortBy with header", () => {
+  it("renders SearchAndSort section", () => {
     renderWithRedux();
     expect(
-      screen.getByRole("heading", { name: /sort by/i }),
+      screen.getByRole("region", { name: /search and sort/i }),
     ).toBeInTheDocument();
   });
 
-  it("renders filter category select and sort select", () => {
+  it("renders search input, filter category select and sort select", () => {
     renderWithRedux();
+    expect(
+      screen.getByPlaceholderText(/search products by name/i),
+    ).toBeInTheDocument();
     expect(
       screen.getByLabelText(/select category to filter/i),
     ).toBeInTheDocument();
@@ -79,6 +87,7 @@ describe("Controls", () => {
         categories: categoriesReducer,
         filters: filtersReducer,
         sort: sortReducer,
+        search: searchReducer,
       },
       preloadedState: {
         categories: {
@@ -88,7 +97,8 @@ describe("Controls", () => {
         },
         products: { items: [], isLoading: false, error: null },
         filters: { categorySlug: null, priceRangeId: null },
-        sort: { sortOptionId: "default" },
+        sort: { sortOptionId: "default" as SortOptionId },
+        search: { searchQuery: "" },
       },
     });
     render(

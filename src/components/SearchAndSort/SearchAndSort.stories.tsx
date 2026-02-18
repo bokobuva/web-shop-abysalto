@@ -9,25 +9,31 @@ import productsReducer from "@/store/productsSlice";
 import categoriesReducer from "@/store/categoriesSlice";
 import filtersReducer from "@/store/filtersSlice";
 import sortReducer from "@/store/sortSlice";
+import searchReducer from "@/store/searchSlice";
 
-import { SortBy } from "@/components/SortBy";
+import { SearchAndSort } from "@/components/SearchAndSort";
 
-const createStore = (sortState?: { sortOptionId: SortOptionId }) =>
+const createStore = (preloadedState?: {
+  sort?: { sortOptionId: SortOptionId };
+  search?: { searchQuery: string };
+}) =>
   configureStore({
     reducer: {
       products: productsReducer,
       categories: categoriesReducer,
       filters: filtersReducer,
       sort: sortReducer,
+      search: searchReducer,
     },
     preloadedState: {
-      sort: sortState ?? { sortOptionId: "default" },
+      sort: preloadedState?.sort ?? { sortOptionId: "default" },
+      search: preloadedState?.search ?? { searchQuery: "" },
     },
   });
 
-const meta: Meta<typeof SortBy> = {
-  title: "Components/SortBy",
-  component: SortBy,
+const meta: Meta<typeof SearchAndSort> = {
+  title: "Components/SearchAndSort",
+  component: SearchAndSort,
   parameters: {
     layout: "padded",
   },
@@ -46,10 +52,20 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
+export const WithSearchQuery: Story = {
+  decorators: [
+    (Story) => (
+      <Provider store={createStore({ search: { searchQuery: "mascara" } })}>
+        <Story />
+      </Provider>
+    ),
+  ],
+};
+
 export const WithPriceAscSelected: Story = {
   decorators: [
     (Story) => (
-      <Provider store={createStore({ sortOptionId: "price-asc" })}>
+      <Provider store={createStore({ sort: { sortOptionId: "price-asc" } })}>
         <Story />
       </Provider>
     ),
@@ -59,7 +75,7 @@ export const WithPriceAscSelected: Story = {
 export const WithNameDescSelected: Story = {
   decorators: [
     (Story) => (
-      <Provider store={createStore({ sortOptionId: "name-desc" })}>
+      <Provider store={createStore({ sort: { sortOptionId: "name-desc" } })}>
         <Story />
       </Provider>
     ),

@@ -5,6 +5,7 @@ import {
   setPriceRange,
   setCategories,
   setSortOption,
+  setSearchQuery,
 } from "@/store";
 import type { RootState } from "@/store";
 import {
@@ -40,6 +41,7 @@ describe("selectors", () => {
     store.dispatch(setCategory(null));
     store.dispatch(setPriceRange(null));
     store.dispatch(setSortOption("default"));
+    store.dispatch(setSearchQuery(""));
   });
 
   describe("selectFilteredProducts", () => {
@@ -53,6 +55,7 @@ describe("selectors", () => {
         categories: { items: undefined, isLoading: false, error: null },
         filters: { categorySlug: null, priceRangeId: null },
         sort: { sortOptionId: "default" as const },
+        search: { searchQuery: "" },
       } as RootState;
       expect(
         selectFilteredProducts(stateWithUndefinedProducts),
@@ -68,16 +71,18 @@ describe("selectors", () => {
       store.dispatch(setCategory("beauty"));
       const state = store.getState();
       const result = selectFilteredProducts(state);
+      expect(result).toBeDefined();
       expect(result).toHaveLength(1);
-      expect(result[0].category).toBe("beauty");
+      expect(result![0].category).toBe("beauty");
     });
 
     it("filters by price range when set", () => {
       store.dispatch(setPriceRange("10-50"));
       const state = store.getState();
       const result = selectFilteredProducts(state);
+      expect(result).toBeDefined();
       expect(result).toHaveLength(1);
-      expect(result[0].price).toBe(25);
+      expect(result![0].price).toBe(25);
     });
 
     it("returns empty when no match", () => {
@@ -104,6 +109,7 @@ describe("selectors", () => {
         categories: { items: undefined, isLoading: false, error: null },
         filters: { categorySlug: null, priceRangeId: null },
         sort: { sortOptionId: "default" as const },
+        search: { searchQuery: "" },
       } as RootState;
       expect(selectCategories(stateWithUndefinedCategories)).toBeUndefined();
     });
@@ -141,6 +147,7 @@ describe("selectors", () => {
         categories: { items: undefined, isLoading: false, error: null },
         filters: { categorySlug: null, priceRangeId: null },
         sort: { sortOptionId: "default" as const },
+        search: { searchQuery: "" },
       } as RootState;
       expect(
         selectFilteredAndSortedProducts(stateWithUndefinedProducts),
@@ -150,37 +157,51 @@ describe("selectors", () => {
     it("returns filtered products in default order when sort is default", () => {
       const state = store.getState();
       const result = selectFilteredAndSortedProducts(state);
+      expect(result).toBeDefined();
       expect(result).toHaveLength(2);
-      expect(result[0].name).toBe("Product A");
-      expect(result[1].name).toBe("Product B");
+      expect(result![0].name).toBe("Product A");
+      expect(result![1].name).toBe("Product B");
     });
 
     it("sorts by price ascending when price-asc", () => {
       store.dispatch(setSortOption("price-asc"));
       const state = store.getState();
       const result = selectFilteredAndSortedProducts(state);
-      expect(result.map((p) => p.price)).toEqual([25, 75]);
+      expect(result).toBeDefined();
+      expect(result!.map((p) => p.price)).toEqual([25, 75]);
     });
 
     it("sorts by price descending when price-desc", () => {
       store.dispatch(setSortOption("price-desc"));
       const state = store.getState();
       const result = selectFilteredAndSortedProducts(state);
-      expect(result.map((p) => p.price)).toEqual([75, 25]);
+      expect(result).toBeDefined();
+      expect(result!.map((p) => p.price)).toEqual([75, 25]);
     });
 
     it("sorts by name A-Z when name-asc", () => {
       store.dispatch(setSortOption("name-asc"));
       const state = store.getState();
       const result = selectFilteredAndSortedProducts(state);
-      expect(result.map((p) => p.name)).toEqual(["Product A", "Product B"]);
+      expect(result).toBeDefined();
+      expect(result!.map((p) => p.name)).toEqual(["Product A", "Product B"]);
     });
 
     it("sorts by name Z-A when name-desc", () => {
       store.dispatch(setSortOption("name-desc"));
       const state = store.getState();
       const result = selectFilteredAndSortedProducts(state);
-      expect(result.map((p) => p.name)).toEqual(["Product B", "Product A"]);
+      expect(result).toBeDefined();
+      expect(result!.map((p) => p.name)).toEqual(["Product B", "Product A"]);
+    });
+
+    it("filters by search query when set", () => {
+      store.dispatch(setSearchQuery("Product A"));
+      const state = store.getState();
+      const result = selectFilteredAndSortedProducts(state);
+      expect(result).toBeDefined();
+      expect(result).toHaveLength(1);
+      expect(result![0].name).toBe("Product A");
     });
 
     it("filters and sorts together", () => {
@@ -188,8 +209,9 @@ describe("selectors", () => {
       store.dispatch(setSortOption("price-desc"));
       const state = store.getState();
       const result = selectFilteredAndSortedProducts(state);
+      expect(result).toBeDefined();
       expect(result).toHaveLength(1);
-      expect(result[0].name).toBe("Product A");
+      expect(result![0].name).toBe("Product A");
     });
   });
 });

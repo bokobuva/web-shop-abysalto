@@ -3,12 +3,13 @@ import { Provider } from "react-redux";
 
 import { configureStore } from "@reduxjs/toolkit";
 
-import type { PriceRangeId } from "@/app/shared/types";
+import type { PriceRangeId, SortOptionId } from "@/app/shared/types";
 
 import productsReducer from "@/store/productsSlice";
 import categoriesReducer from "@/store/categoriesSlice";
 import filtersReducer from "@/store/filtersSlice";
 import sortReducer from "@/store/sortSlice";
+import searchReducer from "@/store/searchSlice";
 
 import { Controls } from "@/components/Controls";
 
@@ -21,7 +22,8 @@ const mockCategories = [
 
 const createStore = (preloadedState?: {
   filters?: { categorySlug: string | null; priceRangeId: PriceRangeId | null };
-  sort?: { sortOptionId: string };
+  sort?: { sortOptionId: SortOptionId };
+  search?: { searchQuery: string };
   categories?: {
     items: typeof mockCategories | undefined;
     isLoading: boolean;
@@ -34,6 +36,7 @@ const createStore = (preloadedState?: {
       categories: categoriesReducer,
       filters: filtersReducer,
       sort: sortReducer,
+      search: searchReducer,
     },
     preloadedState: {
       categories: preloadedState?.categories ?? {
@@ -50,7 +53,8 @@ const createStore = (preloadedState?: {
         categorySlug: null,
         priceRangeId: null,
       },
-      sort: preloadedState?.sort ?? { sortOptionId: "default" },
+      sort: preloadedState?.sort ?? { sortOptionId: "default" as SortOptionId },
+      search: preloadedState?.search ?? { searchQuery: "" },
     },
   });
 

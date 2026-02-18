@@ -106,24 +106,28 @@ describe("filterProducts", () => {
 
   it("filters by category only", () => {
     const result = filterProducts(products, "beauty", null);
+    expect(result).toBeDefined();
     expect(result).toHaveLength(2);
-    expect(result.every((p) => p.category === "beauty")).toBe(true);
+    expect(result!.every((p) => p.category === "beauty")).toBe(true);
   });
 
   it("filters by price range only", () => {
     const result = filterProducts(products, null, "10-50");
+    expect(result).toBeDefined();
     expect(result).toHaveLength(1);
-    expect(result[0].price).toBe(25);
+    expect(result![0].price).toBe(25);
   });
 
   it("filters by both category and price range", () => {
     const result = filterProducts(products, "beauty", "50-100");
+    expect(result).toBeDefined();
     expect(result).toHaveLength(1);
-    expect(result[0].id).toBe("2");
+    expect(result![0].id).toBe("2");
   });
 
   it("returns empty array when no products match", () => {
     const result = filterProducts(products, "groceries", "100+");
+    expect(result).toBeDefined();
     expect(result).toHaveLength(0);
   });
 });
