@@ -122,15 +122,17 @@ describe("Filters", () => {
   it("renders price range radio group", () => {
     renderWithRedux();
     expect(
-      screen.getByRole("group", { name: /filter by price range/i }),
+      screen.getByRole("radiogroup", { name: /price range/i }),
     ).toBeInTheDocument();
     expect(
-      screen.getByLabelText(/price range: \$10 – \$50/i),
+      screen.getByRole("radio", { name: /price range: \$10 – \$50/i }),
     ).toBeInTheDocument();
     expect(
-      screen.getByLabelText(/price range: \$50 – \$100/i),
+      screen.getByRole("radio", { name: /price range: \$50 – \$100/i }),
     ).toBeInTheDocument();
-    expect(screen.getByLabelText(/price range: \$100\+/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole("radio", { name: /price range: \$100\+/i }),
+    ).toBeInTheDocument();
   });
 
   it("does not show reset button when no filters applied", () => {
@@ -159,8 +161,12 @@ describe("Filters", () => {
 
   it("updates price range when radio selected", async () => {
     renderWithRedux();
-    await userEvent.click(screen.getByLabelText(/price range: \$10 – \$50/i));
-    expect(screen.getByLabelText(/price range: \$10 – \$50/i)).toBeChecked();
+    await userEvent.click(
+      screen.getByRole("radio", { name: /price range: \$10 – \$50/i }),
+    );
+    expect(
+      screen.getByRole("radio", { name: /price range: \$10 – \$50/i }),
+    ).toHaveAttribute("aria-checked", "true");
     expect(
       screen.getByRole("button", { name: /clear all filters/i }),
     ).toBeInTheDocument();
@@ -175,5 +181,61 @@ describe("Filters", () => {
     expect(
       screen.queryByRole("button", { name: /clear all filters/i }),
     ).not.toBeInTheDocument();
+  });
+
+  it("makes all price range options focusable via Tab", async () => {
+    renderWithRedux();
+    const user = userEvent.setup();
+
+    const categorySelect = screen.getByLabelText(/select category to filter/i);
+    const price10_50 = screen.getByRole("radio", {
+      name: /price range: \$10 – \$50/i,
+    });
+    const price50_100 = screen.getByRole("radio", {
+      name: /price range: \$50 – \$100/i,
+    });
+    const price100plus = screen.getByRole("radio", {
+      name: /price range: \$100\+/i,
+    });
+
+    categorySelect.focus();
+    await user.tab();
+    expect(price10_50).toHaveFocus();
+    await user.tab();
+    expect(price50_100).toHaveFocus();
+    await user.tab();
+    expect(price100plus).toHaveFocus();
+  });
+
+  it("selects price range on Enter key", async () => {
+    renderWithRedux();
+    const user = userEvent.setup();
+
+    const price50_100 = screen.getByRole("radio", {
+      name: /price range: \$50 – \$100/i,
+    });
+    price50_100.focus();
+    await user.keyboard("{Enter}");
+
+    expect(price50_100).toHaveAttribute("aria-checked", "true");
+    expect(
+      screen.getByRole("button", { name: /clear all filters/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("selects price range on Space key", async () => {
+    renderWithRedux();
+    const user = userEvent.setup();
+
+    const price100plus = screen.getByRole("radio", {
+      name: /price range: \$100\+/i,
+    });
+    price100plus.focus();
+    await user.keyboard(" ");
+
+    expect(price100plus).toHaveAttribute("aria-checked", "true");
+    expect(
+      screen.getByRole("button", { name: /clear all filters/i }),
+    ).toBeInTheDocument();
   });
 });

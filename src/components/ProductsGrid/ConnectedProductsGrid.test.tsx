@@ -1,13 +1,20 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 
 import { configureStore } from "@reduxjs/toolkit";
 
-import type { Product } from "@/app/shared/types";
 import { setCategory } from "@/store";
-import type { SortOptionId } from "@/app/shared/types";
+import type { Product, SortOptionId } from "@/app/shared/types";
 
+const mockReplace = jest.fn();
+let mockSearchParams = new URLSearchParams();
+
+jest.mock("next/navigation", () => ({
+  useRouter: () => ({ replace: mockReplace }),
+  usePathname: () => "/",
+  useSearchParams: () => mockSearchParams,
+}));
 import productsReducer from "@/store/productsSlice";
 import categoriesReducer from "@/store/categoriesSlice";
 import filtersReducer from "@/store/filtersSlice";
@@ -72,6 +79,50 @@ const renderWithRedux = (products: Product[]) => {
 };
 
 describe("ConnectedProductsGrid", () => {
+  beforeEach(() => {
+    mockReplace.mockClear();
+    mockSearchParams = new URLSearchParams();
+  });
+
+  it("opens product modal when Details is clicked", async () => {
+    const products = [
+      createProduct({
+        id: "42",
+        name: "Featured Product",
+        description: "Full description here",
+      }),
+    ];
+    renderWithRedux(products);
+
+    await userEvent.click(
+      screen.getByRole("button", {
+        name: /view details for featured product/i,
+      }),
+    );
+
+    expect(mockReplace).toHaveBeenCalledWith("/?product=42");
+  });
+
+  it("shows product modal when URL has product param", () => {
+    mockSearchParams.set("product", "1");
+    const products = [
+      createProduct({
+        id: "1",
+        name: "Modal Product",
+        description: "Shown in modal",
+      }),
+    ];
+    renderWithRedux(products);
+
+    const dialog = screen.getByRole("dialog");
+    expect(dialog).toBeInTheDocument();
+    const withinDialog = within(dialog);
+    expect(
+      withinDialog.getByRole("heading", { name: "Modal Product" }),
+    ).toBeInTheDocument();
+    expect(withinDialog.getByText("Shown in modal")).toBeInTheDocument();
+  });
+
   it("shows pagination when filtered results exceed 20", () => {
     const manyProducts = Array.from({ length: 25 }, (_, i) =>
       createProduct({

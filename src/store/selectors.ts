@@ -5,9 +5,19 @@ import { filterProducts } from "@/lib/filters/filterProducts";
 import { searchProducts } from "@/lib/search/searchProducts";
 import { sortProducts } from "@/lib/sort/sortProducts";
 
+import type { Product } from "@/app/shared/types";
+
 import type { RootState } from "@/store";
 
 export const selectProducts = (state: RootState) => state.products.items;
+
+export const selectProductById = (
+  state: RootState,
+  productId: string | null,
+): Product | null => {
+  if (!productId) return null;
+  return state.products.items?.find((p) => p.id === productId) ?? null;
+};
 export const selectCategorySlug = (state: RootState) =>
   state.filters.categorySlug;
 export const selectPriceRangeId = (state: RootState) =>

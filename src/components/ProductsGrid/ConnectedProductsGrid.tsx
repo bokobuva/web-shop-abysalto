@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
@@ -18,11 +18,16 @@ import {
   setCurrentPage,
 } from "@/store";
 
+import { useProductModal } from "@/hooks/useProductModal";
+
 import { Pagination } from "@/components/Pagination";
+import { ProductDetailsModal } from "@/components/ProductDetailsModal";
 import { ProductsGrid } from "@/components/ProductsGrid";
 
-export const ConnectedProductsGrid: React.FC = () => {
+function ConnectedProductsGridInner() {
   const dispatch = useDispatch();
+  const { product, selectedProductId, openProduct, closeProduct } =
+    useProductModal();
   const products = useSelector(selectPaginatedProducts);
   const isLoading = useSelector(selectProductsLoading);
   const error = useSelector(selectProductsError);
@@ -38,14 +43,18 @@ export const ConnectedProductsGrid: React.FC = () => {
     dispatch(resetPagination());
   }, [dispatch, categorySlug, priceRangeId, searchQuery, sortOptionId]);
 
+  useEffect(() => {
+    if (selectedProductId && !product && !isLoading) {
+      closeProduct();
+    }
+  }, [selectedProductId, product, isLoading, closeProduct]);
+
   return (
     <>
       <ProductsGrid
         products={isLoading ? undefined : products}
         error={error}
-        onProductClick={(product) => {
-          console.log("Product clicked:", product);
-        }}
+        onProductClick={(p) => openProduct(p.id)}
       />
       {showPagination && (
         <Pagination
@@ -54,6 +63,15 @@ export const ConnectedProductsGrid: React.FC = () => {
           onPageChange={(page) => dispatch(setCurrentPage(page))}
         />
       )}
+      <ProductDetailsModal product={product} onClose={closeProduct} />
     </>
+  );
+}
+
+export const ConnectedProductsGrid: React.FC = () => {
+  return (
+    <Suspense fallback={null}>
+      <ConnectedProductsGridInner />
+    </Suspense>
   );
 };

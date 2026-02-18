@@ -20,6 +20,14 @@ export const Filters: React.FC = () => {
 
   const hasActiveFilters = categorySlug !== null || priceRangeId !== null;
 
+  const handleResetFilters = () => {
+    const categorySelect = document.getElementById("filter-category");
+    if (categorySelect instanceof HTMLElement) {
+      categorySelect.focus();
+    }
+    dispatch(resetFilters());
+  };
+
   return (
     <section
       aria-label="Product filters"
@@ -79,50 +87,59 @@ export const Filters: React.FC = () => {
             Price range
           </span>
           <div
-            role="group"
+            role="radiogroup"
             aria-labelledby="filter-price-label"
             className="flex flex-col gap-4 sm:flex-row sm:flex-wrap"
           >
-            {PRICE_RANGES.map((range) => (
-              <label
-                key={range.id}
-                className="flex cursor-pointer items-center gap-2"
-              >
-                <input
-                  type="radio"
-                  name="price-range"
-                  value={range.id}
-                  checked={priceRangeId === range.id}
-                  onChange={() =>
-                    dispatch(
-                      setPriceRange(
-                        priceRangeId === range.id
-                          ? null
-                          : (range.id as PriceRangeId),
-                      ),
-                    )
-                  }
+            {PRICE_RANGES.map((range) => {
+              const isChecked = priceRangeId === range.id;
+              const handleSelect = () =>
+                dispatch(
+                  setPriceRange(isChecked ? null : (range.id as PriceRangeId)),
+                );
+              return (
+                <button
+                  key={range.id}
+                  type="button"
+                  role="radio"
+                  aria-checked={isChecked}
                   aria-label={`Price range: ${range.label}`}
                   data-testid={`filter-price-${range.id}`}
-                  className="h-4 w-4"
-                />
-                <span className="text-sm">{range.label}</span>
-              </label>
-            ))}
+                  tabIndex={0}
+                  onClick={handleSelect}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      handleSelect();
+                    }
+                  }}
+                  className="flex cursor-pointer items-center gap-2 rounded focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+                >
+                  <span
+                    aria-hidden
+                    className={`h-4 w-4 shrink-0 rounded-full border-2 ${
+                      isChecked
+                        ? "border-gray-600 bg-gray-600 dark:border-gray-400 dark:bg-gray-400"
+                        : "border-gray-400 dark:border-gray-500"
+                    }`}
+                  />
+                  <span className="text-sm">{range.label}</span>
+                </button>
+              );
+            })}
           </div>
         </fieldset>
 
-        <div
-          className={`flex shrink-0 items-center ${!hasActiveFilters ? "invisible" : ""}`}
-          aria-hidden={!hasActiveFilters}
-        >
-          <Button
-            label="Reset filters"
-            onClick={() => dispatch(resetFilters())}
-            dataTestId="filter-reset"
-            ariaLabel="Clear all filters"
-          />
-        </div>
+        {hasActiveFilters && (
+          <div className="flex shrink-0 items-center">
+            <Button
+              label="Reset filters"
+              onClick={handleResetFilters}
+              dataTestId="filter-reset"
+              ariaLabel="Clear all filters"
+            />
+          </div>
+        )}
       </div>
     </section>
   );

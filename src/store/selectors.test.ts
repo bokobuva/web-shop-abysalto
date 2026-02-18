@@ -13,6 +13,7 @@ import {
   selectFilteredProducts,
   selectFilteredAndSortedProducts,
   selectPaginatedProducts,
+  selectProductById,
   selectTotalFilteredCount,
   selectTotalPages,
   selectShowPagination,
@@ -280,6 +281,36 @@ describe("selectors", () => {
       store.dispatch(setProducts(mockProducts));
       const state = store.getState();
       expect(selectShowPagination(state)).toBe(false);
+    });
+  });
+
+  describe("selectProductById", () => {
+    it("returns product when id exists", () => {
+      const state = store.getState();
+      expect(selectProductById(state, "1")).toEqual(mockProducts[0]);
+      expect(selectProductById(state, "2")).toEqual(mockProducts[1]);
+    });
+
+    it("returns null when id does not exist", () => {
+      const state = store.getState();
+      expect(selectProductById(state, "999")).toBeNull();
+    });
+
+    it("returns null when productId is null", () => {
+      const state = store.getState();
+      expect(selectProductById(state, null)).toBeNull();
+    });
+
+    it("returns null when products.items is undefined", () => {
+      const stateWithUndefinedProducts = {
+        products: { items: undefined, isLoading: false, error: null },
+        categories: { items: undefined, isLoading: false, error: null },
+        filters: { categorySlug: null, priceRangeId: null },
+        sort: { sortOptionId: "default" as const },
+        search: { searchQuery: "" },
+        pagination: { currentPage: 1, pageSize: 20 },
+      } as RootState;
+      expect(selectProductById(stateWithUndefinedProducts, "1")).toBeNull();
     });
   });
 });
