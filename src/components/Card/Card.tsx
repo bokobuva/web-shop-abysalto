@@ -10,6 +10,7 @@ type CardProps = {
   onClick: () => void;
   maxDescriptionLength?: number;
   id?: string;
+  priority?: boolean;
 };
 
 const DEFAULT_MAX_DESCRIPTION_LENGTH = 100;
@@ -30,6 +31,7 @@ export const Card: React.FC<CardProps> = ({
   onClick,
   maxDescriptionLength = DEFAULT_MAX_DESCRIPTION_LENGTH,
   id,
+  priority = false,
 }) => {
   const truncatedDescription = truncateDescription(
     description,
@@ -51,6 +53,7 @@ export const Card: React.FC<CardProps> = ({
         width={200}
         height={200}
         className="ml-auto mr-auto"
+        loading={priority ? "eager" : "lazy"}
       />
       <h2 id={titleId} className="mt-2 font-semibold">
         {title}

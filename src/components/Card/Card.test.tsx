@@ -61,6 +61,18 @@ describe("Card", () => {
     expect(onClick).toHaveBeenCalledTimes(1);
   });
 
+  it("sets loading eager when priority is true", () => {
+    render(<Card {...defaultProps} priority />);
+    const img = screen.getByRole("img", { name: "Test Product" });
+    expect(img).toHaveAttribute("loading", "eager");
+  });
+
+  it("sets loading lazy when priority is false or omitted", () => {
+    render(<Card {...defaultProps} />);
+    const img = screen.getByRole("img", { name: "Test Product" });
+    expect(img).toHaveAttribute("loading", "lazy");
+  });
+
   it("calls onClick when Enter is pressed on Details button", async () => {
     const onClick = jest.fn();
     render(<Card {...defaultProps} onClick={onClick} />);

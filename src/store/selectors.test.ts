@@ -6,11 +6,16 @@ import {
   setCategories,
   setSortOption,
   setSearchQuery,
+  setCurrentPage,
 } from "@/store";
 import type { RootState } from "@/store";
 import {
   selectFilteredProducts,
   selectFilteredAndSortedProducts,
+  selectPaginatedProducts,
+  selectTotalFilteredCount,
+  selectTotalPages,
+  selectShowPagination,
   selectProducts,
   selectCategories,
   selectFilters,
@@ -56,6 +61,7 @@ describe("selectors", () => {
         filters: { categorySlug: null, priceRangeId: null },
         sort: { sortOptionId: "default" as const },
         search: { searchQuery: "" },
+        pagination: { currentPage: 1, pageSize: 20 },
       } as RootState;
       expect(
         selectFilteredProducts(stateWithUndefinedProducts),
@@ -110,6 +116,7 @@ describe("selectors", () => {
         filters: { categorySlug: null, priceRangeId: null },
         sort: { sortOptionId: "default" as const },
         search: { searchQuery: "" },
+        pagination: { currentPage: 1, pageSize: 20 },
       } as RootState;
       expect(selectCategories(stateWithUndefinedCategories)).toBeUndefined();
     });
@@ -148,6 +155,7 @@ describe("selectors", () => {
         filters: { categorySlug: null, priceRangeId: null },
         sort: { sortOptionId: "default" as const },
         search: { searchQuery: "" },
+        pagination: { currentPage: 1, pageSize: 20 },
       } as RootState;
       expect(
         selectFilteredAndSortedProducts(stateWithUndefinedProducts),
@@ -212,6 +220,66 @@ describe("selectors", () => {
       expect(result).toBeDefined();
       expect(result).toHaveLength(1);
       expect(result![0].name).toBe("Product A");
+    });
+  });
+
+  describe("pagination selectors", () => {
+    const manyProducts = Array.from({ length: 25 }, (_, i) => ({
+      id: String(i + 1),
+      name: `Product ${i + 1}`,
+      price: 10 + i,
+      image: "",
+      description: "",
+      category: "beauty",
+    }));
+
+    beforeEach(() => {
+      store.dispatch(setProducts(manyProducts));
+    });
+
+    it("selectPaginatedProducts returns first page when 25 products", () => {
+      const state = store.getState();
+      const result = selectPaginatedProducts(state);
+      expect(result).toBeDefined();
+      expect(result).toHaveLength(20);
+      expect(result![0].name).toBe("Product 1");
+      expect(result![19].name).toBe("Product 20");
+    });
+
+    it("selectPaginatedProducts returns second page when currentPage is 2", () => {
+      store.dispatch(setCurrentPage(2));
+      const state = store.getState();
+      const result = selectPaginatedProducts(state);
+      expect(result).toBeDefined();
+      expect(result).toHaveLength(5);
+      expect(result![0].name).toBe("Product 21");
+    });
+
+    it("selectTotalFilteredCount returns full list length", () => {
+      const state = store.getState();
+      expect(selectTotalFilteredCount(state)).toBe(25);
+    });
+
+    it("selectTotalFilteredCount reflects filtered results", () => {
+      store.dispatch(setCategory("furniture"));
+      const state = store.getState();
+      expect(selectTotalFilteredCount(state)).toBe(0);
+    });
+
+    it("selectTotalPages returns 2 for 25 products with pageSize 20", () => {
+      const state = store.getState();
+      expect(selectTotalPages(state)).toBe(2);
+    });
+
+    it("selectShowPagination is true when filtered results > 20", () => {
+      const state = store.getState();
+      expect(selectShowPagination(state)).toBe(true);
+    });
+
+    it("selectShowPagination is false when filtered results <= 20", () => {
+      store.dispatch(setProducts(mockProducts));
+      const state = store.getState();
+      expect(selectShowPagination(state)).toBe(false);
     });
   });
 });

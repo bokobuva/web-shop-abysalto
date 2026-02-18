@@ -65,7 +65,7 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
       aria-label="Product listing"
       className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
     >
-      {products.map((product) => (
+      {products.map((product, index) => (
         <Card
           key={product.id}
           id={product.id}
@@ -74,6 +74,7 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
           image={product.image}
           price={product.price}
           onClick={() => onProductClick?.(product)}
+          priority={index < 6}
         />
       ))}
     </div>

@@ -1,5 +1,6 @@
 import { createSelector } from "@reduxjs/toolkit";
 
+import { paginate } from "@/lib/pagination";
 import { filterProducts } from "@/lib/filters/filterProducts";
 import { searchProducts } from "@/lib/search/searchProducts";
 import { sortProducts } from "@/lib/sort/sortProducts";
@@ -7,10 +8,12 @@ import { sortProducts } from "@/lib/sort/sortProducts";
 import type { RootState } from "@/store";
 
 export const selectProducts = (state: RootState) => state.products.items;
-const selectCategorySlug = (state: RootState) => state.filters.categorySlug;
-const selectPriceRangeId = (state: RootState) => state.filters.priceRangeId;
-const selectSearchQuery = (state: RootState) => state.search.searchQuery;
-const selectSortOptionId = (state: RootState) => state.sort.sortOptionId;
+export const selectCategorySlug = (state: RootState) =>
+  state.filters.categorySlug;
+export const selectPriceRangeId = (state: RootState) =>
+  state.filters.priceRangeId;
+export const selectSearchQuery = (state: RootState) => state.search.searchQuery;
+export const selectSortOptionId = (state: RootState) => state.sort.sortOptionId;
 
 export const selectFilteredProducts = createSelector(
   [selectProducts, selectCategorySlug, selectPriceRangeId],
@@ -25,6 +28,31 @@ const selectSearchedProducts = createSelector(
 export const selectFilteredAndSortedProducts = createSelector(
   [selectSearchedProducts, selectSortOptionId],
   sortProducts,
+);
+
+export const selectCurrentPage = (state: RootState) =>
+  state.pagination.currentPage;
+const selectPageSize = (state: RootState) => state.pagination.pageSize;
+
+export const selectPaginatedProducts = createSelector(
+  [selectFilteredAndSortedProducts, selectCurrentPage, selectPageSize],
+  (products, page, pageSize) => paginate(products, page, pageSize),
+);
+
+export const selectTotalFilteredCount = createSelector(
+  [selectFilteredAndSortedProducts],
+  (products) => products?.length ?? 0,
+);
+
+export const selectTotalPages = createSelector(
+  [selectTotalFilteredCount, selectPageSize],
+  (totalCount, pageSize) =>
+    pageSize > 0 ? Math.ceil(totalCount / pageSize) : 0,
+);
+
+export const selectShowPagination = createSelector(
+  [selectTotalFilteredCount, selectPageSize],
+  (totalCount, pageSize) => totalCount > pageSize,
 );
 
 export const selectProductsLoading = (state: RootState) =>
