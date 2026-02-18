@@ -1,6 +1,6 @@
 import { Product } from "@/app/shared/types";
 
-import { Card } from "../Card";
+import { Card } from "@/components/Card";
 
 type ProductsGridProps = {
   products?: Product[];

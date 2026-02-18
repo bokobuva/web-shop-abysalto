@@ -1,6 +1,6 @@
 import type { Product } from "@/app/shared/types";
 
-import { sortProducts } from "./sortProducts";
+import { sortProducts } from "@/lib/sort/sortProducts";
 
 const mockProducts: Product[] = [
   {
@@ -68,5 +68,9 @@ describe("sortProducts", () => {
 
   it("returns empty array when input is empty", () => {
     expect(sortProducts([], "price-asc")).toEqual([]);
+  });
+
+  it("returns undefined when products is undefined", () => {
+    expect(sortProducts(undefined, "price-asc")).toBeUndefined();
   });
 });

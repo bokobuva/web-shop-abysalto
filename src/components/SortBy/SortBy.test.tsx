@@ -9,7 +9,7 @@ import categoriesReducer from "@/store/categoriesSlice";
 import filtersReducer from "@/store/filtersSlice";
 import sortReducer from "@/store/sortSlice";
 
-import { SortBy } from "./SortBy";
+import { SortBy } from "@/components/SortBy";
 
 const createStore = (sortOptionId = "default") =>
   configureStore({

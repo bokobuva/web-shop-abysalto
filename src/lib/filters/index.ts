@@ -2,4 +2,4 @@ export {
   filterByCategory,
   filterByPriceRange,
   filterProducts,
-} from "./filterProducts";
+} from "@/lib/filters/filterProducts";

@@ -8,7 +8,7 @@ import categoriesReducer from "@/store/categoriesSlice";
 import filtersReducer from "@/store/filtersSlice";
 import sortReducer from "@/store/sortSlice";
 
-import { Controls } from "./Controls";
+import { Controls } from "@/components/Controls";
 
 const mockCategories = [
   { slug: "beauty", name: "Beauty" },
@@ -70,5 +70,34 @@ describe("Controls", () => {
       screen.getByLabelText(/select category to filter/i),
     ).toBeInTheDocument();
     expect(screen.getByLabelText(/select sort order/i)).toBeInTheDocument();
+  });
+
+  it("shows category loader when categories undefined", () => {
+    const store = configureStore({
+      reducer: {
+        products: productsReducer,
+        categories: categoriesReducer,
+        filters: filtersReducer,
+        sort: sortReducer,
+      },
+      preloadedState: {
+        categories: {
+          items: undefined,
+          isLoading: false,
+          error: null,
+        },
+        products: { items: [], isLoading: false, error: null },
+        filters: { categorySlug: null, priceRangeId: null },
+        sort: { sortOptionId: "default" },
+      },
+    });
+    render(
+      <Provider store={store}>
+        <Controls />
+      </Provider>,
+    );
+    expect(
+      screen.getByRole("status", { name: /loading categories/i }),
+    ).toBeInTheDocument();
   });
 });

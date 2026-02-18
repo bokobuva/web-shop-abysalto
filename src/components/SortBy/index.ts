@@ -1,1 +1,1 @@
-export { SortBy } from "./SortBy";
+export { SortBy } from "@/components/SortBy/SortBy";

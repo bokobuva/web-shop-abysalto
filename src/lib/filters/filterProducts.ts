@@ -21,10 +21,11 @@ export function filterByPriceRange(
 }
 
 export function filterProducts(
-  products: Product[],
+  products: Product[] | undefined,
   categorySlug: string | null,
   priceRangeId: PriceRangeId | null,
-): Product[] {
+): Product[] | undefined {
+  if (products === undefined) return undefined;
   return products.filter(
     (p) =>
       filterByCategory(p, categorySlug) && filterByPriceRange(p, priceRangeId),

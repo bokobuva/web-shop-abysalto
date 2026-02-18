@@ -2,9 +2,10 @@ import type { Product } from "@/app/shared/types";
 import type { SortOptionId } from "@/app/shared/types";
 
 export function sortProducts(
-  products: Product[],
+  products: Product[] | undefined,
   sortOptionId: SortOptionId,
-): Product[] {
+): Product[] | undefined {
+  if (products === undefined) return undefined;
   if (sortOptionId === "default") return products;
 
   const sorted = products.slice();

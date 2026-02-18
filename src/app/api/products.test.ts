@@ -1,4 +1,4 @@
-import { fetchProducts } from "./products";
+import { fetchProducts } from "@/app/api/products";
 
 const mockFetch = jest.fn();
 

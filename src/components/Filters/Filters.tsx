@@ -11,7 +11,7 @@ import {
 } from "@/store";
 import { resetFilters } from "@/store/filtersSlice";
 
-import { Button } from "../Button";
+import { Button } from "@/components/Button";
 
 export const Filters: React.FC = () => {
   const dispatch = useDispatch();
@@ -28,8 +28,8 @@ export const Filters: React.FC = () => {
       <h2 className="mb-3 text-lg font-semibold text-gray-900 dark:text-zinc-50">
         Filters
       </h2>
-      <div className="flex flex-row flex-wrap items-end gap-6">
-        <fieldset className="flex flex-col gap-2">
+      <div className="flex w-full flex-col gap-6 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
+        <fieldset className="flex shrink-0 flex-col gap-2">
           <legend className="sr-only">Filter by category</legend>
           <label
             htmlFor="filter-category"
@@ -37,24 +37,40 @@ export const Filters: React.FC = () => {
           >
             Category
           </label>
-          <select
-            id="filter-category"
-            value={categorySlug ?? ""}
-            onChange={(e) => dispatch(setCategory(e.target.value || null))}
-            aria-label="Select category to filter products"
-            data-testid="filter-category"
-            className="cursor-pointer rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
-          >
-            <option value="">All categories</option>
-            {categories.map((cat) => (
-              <option key={cat.slug} value={cat.slug}>
-                {cat.name}
-              </option>
-            ))}
-          </select>
+          {categories === undefined ? (
+            <div
+              role="status"
+              aria-busy="true"
+              aria-label="Loading categories"
+              className="flex min-h-[42px] items-center"
+            >
+              <div
+                className="h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-gray-800 dark:border-gray-700 dark:border-t-gray-200"
+                aria-hidden="true"
+              />
+            </div>
+          ) : (
+            <div className="flex min-h-[42px] w-full items-center">
+              <select
+                id="filter-category"
+                value={categorySlug ?? ""}
+                onChange={(e) => dispatch(setCategory(e.target.value || null))}
+                aria-label="Select category to filter products"
+                data-testid="filter-category"
+                className="w-full cursor-pointer rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
+              >
+                <option value="">All categories</option>
+                {categories.map((cat) => (
+                  <option key={cat.slug} value={cat.slug}>
+                    {cat.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
         </fieldset>
 
-        <fieldset className="flex flex-col gap-2">
+        <fieldset className="flex shrink-0 flex-col gap-2">
           <legend className="sr-only">Filter by price range</legend>
           <span
             id="filter-price-label"
@@ -65,7 +81,7 @@ export const Filters: React.FC = () => {
           <div
             role="group"
             aria-labelledby="filter-price-label"
-            className="flex flex-row flex-wrap gap-4"
+            className="flex flex-col gap-4 sm:flex-row sm:flex-wrap"
           >
             {PRICE_RANGES.map((range) => (
               <label
@@ -96,14 +112,17 @@ export const Filters: React.FC = () => {
           </div>
         </fieldset>
 
-        {hasActiveFilters && (
+        <div
+          className={`flex shrink-0 items-center ${!hasActiveFilters ? "invisible" : ""}`}
+          aria-hidden={!hasActiveFilters}
+        >
           <Button
             label="Reset filters"
             onClick={() => dispatch(resetFilters())}
             dataTestId="filter-reset"
             ariaLabel="Clear all filters"
           />
-        )}
+        </div>
       </div>
     </section>
   );

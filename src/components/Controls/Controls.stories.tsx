@@ -10,7 +10,7 @@ import categoriesReducer from "@/store/categoriesSlice";
 import filtersReducer from "@/store/filtersSlice";
 import sortReducer from "@/store/sortSlice";
 
-import { Controls } from "./Controls";
+import { Controls } from "@/components/Controls";
 
 const mockCategories = [
   { slug: "beauty", name: "Beauty" },
@@ -22,6 +22,11 @@ const mockCategories = [
 const createStore = (preloadedState?: {
   filters?: { categorySlug: string | null; priceRangeId: PriceRangeId | null };
   sort?: { sortOptionId: string };
+  categories?: {
+    items: typeof mockCategories | undefined;
+    isLoading: boolean;
+    error: string | null;
+  };
 }) =>
   configureStore({
     reducer: {
@@ -31,7 +36,7 @@ const createStore = (preloadedState?: {
       sort: sortReducer,
     },
     preloadedState: {
-      categories: {
+      categories: preloadedState?.categories ?? {
         items: mockCategories,
         isLoading: false,
         error: null,
@@ -69,3 +74,21 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
+
+export const LoadingCategories: Story = {
+  decorators: [
+    (Story) => (
+      <Provider
+        store={createStore({
+          categories: {
+            items: undefined,
+            isLoading: true,
+            error: null,
+          },
+        })}
+      >
+        <Story />
+      </Provider>
+    ),
+  ],
+};

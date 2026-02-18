@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import productsReducer from "./productsSlice";
-import categoriesReducer from "./categoriesSlice";
-import filtersReducer from "./filtersSlice";
-import sortReducer from "./sortSlice";
+import productsReducer from "@/store/productsSlice";
+import categoriesReducer from "@/store/categoriesSlice";
+import filtersReducer from "@/store/filtersSlice";
+import sortReducer from "@/store/sortSlice";
 
 export const store = configureStore({
   reducer: {
@@ -21,12 +21,12 @@ export {
   setProducts,
   setProductsLoading,
   setProductsError,
-} from "./productsSlice";
+} from "@/store/productsSlice";
 export {
   setCategories,
   setCategoriesLoading,
   setCategoriesError,
-} from "./categoriesSlice";
-export { setCategory, setPriceRange, resetFilters } from "./filtersSlice";
-export { setSortOption } from "./sortSlice";
-export * from "./selectors";
+} from "@/store/categoriesSlice";
+export { setCategory, setPriceRange, resetFilters } from "@/store/filtersSlice";
+export { setSortOption } from "@/store/sortSlice";
+export * from "@/store/selectors";

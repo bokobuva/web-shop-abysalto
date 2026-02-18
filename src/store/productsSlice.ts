@@ -3,13 +3,13 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { Product } from "@/app/shared/types";
 
 type ProductsState = {
-  items: Product[];
+  items: Product[] | undefined;
   isLoading: boolean;
   error: string | null;
 };
 
 const initialState: ProductsState = {
-  items: [],
+  items: undefined,
   isLoading: false,
   error: null,
 };

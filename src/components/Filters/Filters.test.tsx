@@ -9,17 +9,24 @@ import categoriesReducer from "@/store/categoriesSlice";
 import filtersReducer from "@/store/filtersSlice";
 import sortReducer from "@/store/sortSlice";
 
-import { Filters } from "./Filters";
+import { Filters } from "@/components/Filters";
 
 const mockCategories = [
   { slug: "beauty", name: "Beauty" },
   { slug: "furniture", name: "Furniture" },
 ];
 
-const createStore = (filtersState?: {
-  categorySlug: string | null;
-  priceRangeId: string | null;
-}) =>
+const createStore = (
+  filtersState?: {
+    categorySlug: string | null;
+    priceRangeId: string | null;
+  },
+  categoriesState?: {
+    items: typeof mockCategories | undefined;
+    isLoading: boolean;
+    error: string | null;
+  },
+) =>
   configureStore({
     reducer: {
       products: productsReducer,
@@ -28,7 +35,7 @@ const createStore = (filtersState?: {
       sort: sortReducer,
     },
     preloadedState: {
-      categories: {
+      categories: categoriesState ?? {
         items: mockCategories,
         isLoading: false,
         error: null,
@@ -62,6 +69,35 @@ const renderWithRedux = (filtersState?: {
 };
 
 describe("Filters", () => {
+  it("shows category loader when categories is undefined", () => {
+    const store = configureStore({
+      reducer: {
+        products: productsReducer,
+        categories: categoriesReducer,
+        filters: filtersReducer,
+        sort: sortReducer,
+      },
+      preloadedState: {
+        categories: {
+          items: undefined,
+          isLoading: false,
+          error: null,
+        },
+        products: { items: [], isLoading: false, error: null },
+        filters: { categorySlug: null, priceRangeId: null },
+        sort: { sortOptionId: "default" },
+      },
+    });
+    render(
+      <Provider store={store}>
+        <Filters />
+      </Provider>,
+    );
+    expect(
+      screen.getByRole("status", { name: /loading categories/i }),
+    ).toBeInTheDocument();
+  });
+
   it("renders category select with options", () => {
     renderWithRedux();
     expect(

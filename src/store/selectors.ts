@@ -3,7 +3,7 @@ import { createSelector } from "@reduxjs/toolkit";
 import { filterProducts } from "@/lib/filters/filterProducts";
 import { sortProducts } from "@/lib/sort/sortProducts";
 
-import type { RootState } from "./index";
+import type { RootState } from "@/store";
 
 export const selectProducts = (state: RootState) => state.products.items;
 const selectCategorySlug = (state: RootState) => state.filters.categorySlug;

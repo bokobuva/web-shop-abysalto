@@ -1,18 +1,19 @@
-import { store } from "./index";
+import { store } from "@/store";
 import {
   setProducts,
   setCategory,
   setPriceRange,
   setCategories,
   setSortOption,
-} from "./index";
+} from "@/store";
+import type { RootState } from "@/store";
 import {
   selectFilteredProducts,
   selectFilteredAndSortedProducts,
   selectProducts,
   selectCategories,
   selectFilters,
-} from "./selectors";
+} from "@/store/selectors";
 
 const mockProducts = [
   {
@@ -42,6 +43,22 @@ describe("selectors", () => {
   });
 
   describe("selectFilteredProducts", () => {
+    it("returns undefined when products.items is undefined", () => {
+      const stateWithUndefinedProducts = {
+        products: {
+          items: undefined,
+          isLoading: false,
+          error: null,
+        },
+        categories: { items: undefined, isLoading: false, error: null },
+        filters: { categorySlug: null, priceRangeId: null },
+        sort: { sortOptionId: "default" as const },
+      } as RootState;
+      expect(
+        selectFilteredProducts(stateWithUndefinedProducts),
+      ).toBeUndefined();
+    });
+
     it("returns all products when no filters", () => {
       const state = store.getState();
       expect(selectFilteredProducts(state)).toHaveLength(2);
@@ -77,6 +94,20 @@ describe("selectors", () => {
       expect(selectProducts(state)).toEqual(mockProducts);
     });
 
+    it("selectCategories returns undefined when items is undefined", () => {
+      const stateWithUndefinedCategories = {
+        products: {
+          items: mockProducts,
+          isLoading: false,
+          error: null,
+        },
+        categories: { items: undefined, isLoading: false, error: null },
+        filters: { categorySlug: null, priceRangeId: null },
+        sort: { sortOptionId: "default" as const },
+      } as RootState;
+      expect(selectCategories(stateWithUndefinedCategories)).toBeUndefined();
+    });
+
     it("selectCategories returns items after dispatch", () => {
       const cats = [{ slug: "beauty", name: "Beauty" }];
       store.dispatch(
@@ -100,6 +131,22 @@ describe("selectors", () => {
   });
 
   describe("selectFilteredAndSortedProducts", () => {
+    it("returns undefined when products.items is undefined", () => {
+      const stateWithUndefinedProducts = {
+        products: {
+          items: undefined,
+          isLoading: false,
+          error: null,
+        },
+        categories: { items: undefined, isLoading: false, error: null },
+        filters: { categorySlug: null, priceRangeId: null },
+        sort: { sortOptionId: "default" as const },
+      } as RootState;
+      expect(
+        selectFilteredAndSortedProducts(stateWithUndefinedProducts),
+      ).toBeUndefined();
+    });
+
     it("returns filtered products in default order when sort is default", () => {
       const state = store.getState();
       const result = selectFilteredAndSortedProducts(state);

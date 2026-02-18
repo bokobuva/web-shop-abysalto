@@ -8,7 +8,7 @@ import {
   selectProductsLoading,
 } from "@/store";
 
-import { ProductsGrid } from "./ProductsGrid";
+import { ProductsGrid } from "@/components/ProductsGrid";
 
 export const ConnectedProductsGrid: React.FC = () => {
   const products = useSelector(selectFilteredAndSortedProducts);

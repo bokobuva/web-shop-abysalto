@@ -3,13 +3,13 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { Category } from "@/app/shared/types";
 
 type CategoriesState = {
-  items: Category[];
+  items: Category[] | undefined;
   isLoading: boolean;
   error: string | null;
 };
 
 const initialState: CategoriesState = {
-  items: [],
+  items: undefined,
   isLoading: false,
   error: null,
 };

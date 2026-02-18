@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 
 import type { Product } from "@/app/shared/types";
 
-import { ProductsGrid } from "./ProductsGrid";
+import { ProductsGrid } from "@/components/ProductsGrid";
 
 const mockProduct: Product = {
   id: "1",

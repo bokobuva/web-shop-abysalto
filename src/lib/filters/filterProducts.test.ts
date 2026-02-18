@@ -4,7 +4,7 @@ import {
   filterByCategory,
   filterByPriceRange,
   filterProducts,
-} from "./filterProducts";
+} from "@/lib/filters/filterProducts";
 
 const createProduct = (overrides: Partial<Product> = {}): Product => ({
   id: "1",
@@ -89,6 +89,11 @@ describe("filterByPriceRange", () => {
 });
 
 describe("filterProducts", () => {
+  it("returns undefined when products is undefined", () => {
+    expect(filterProducts(undefined, null, null)).toBeUndefined();
+    expect(filterProducts(undefined, "beauty", null)).toBeUndefined();
+  });
+
   const products = [
     createProduct({ id: "1", category: "beauty", price: 25 }),
     createProduct({ id: "2", category: "beauty", price: 75 }),

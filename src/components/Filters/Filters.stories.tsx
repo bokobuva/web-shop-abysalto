@@ -10,7 +10,7 @@ import categoriesReducer from "@/store/categoriesSlice";
 import filtersReducer from "@/store/filtersSlice";
 import sortReducer from "@/store/sortSlice";
 
-import { Filters } from "./Filters";
+import { Filters } from "@/components/Filters";
 
 const mockCategories = [
   { slug: "beauty", name: "Beauty" },
@@ -19,10 +19,17 @@ const mockCategories = [
   { slug: "groceries", name: "Groceries" },
 ];
 
-const createStore = (filtersState?: {
-  categorySlug: string | null;
-  priceRangeId: PriceRangeId | null;
-}) =>
+const createStore = (
+  filtersState?: {
+    categorySlug: string | null;
+    priceRangeId: PriceRangeId | null;
+  },
+  categoriesState?: {
+    items: typeof mockCategories | undefined;
+    isLoading: boolean;
+    error: string | null;
+  },
+) =>
   configureStore({
     reducer: {
       products: productsReducer,
@@ -31,7 +38,7 @@ const createStore = (filtersState?: {
       sort: sortReducer,
     },
     preloadedState: {
-      categories: {
+      categories: categoriesState ?? {
         items: mockCategories,
         isLoading: false,
         error: null,
@@ -99,6 +106,22 @@ export const WithAllFiltersSelected: Story = {
     (Story) => (
       <Provider
         store={createStore({ categorySlug: "furniture", priceRangeId: "100+" })}
+      >
+        <Story />
+      </Provider>
+    ),
+  ],
+};
+
+export const LoadingCategories: Story = {
+  decorators: [
+    (Story) => (
+      <Provider
+        store={createStore(undefined, {
+          items: undefined,
+          isLoading: true,
+          error: null,
+        })}
       >
         <Story />
       </Provider>

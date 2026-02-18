@@ -1,1 +1,1 @@
-export { Filters } from "./Filters";
+export { Filters } from "@/components/Filters/Filters";

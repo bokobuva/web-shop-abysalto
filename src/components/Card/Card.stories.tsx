@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { fn } from "storybook/test";
 
-import { Card } from "./Card";
+import { Card } from "@/components/Card";
 
 const meta = {
   title: "Components/Card",

@@ -3,7 +3,7 @@ import { fn } from "storybook/test";
 
 import type { Product } from "@/app/shared/types";
 
-import { ProductsGrid } from "./ProductsGrid";
+import { ProductsGrid } from "@/components/ProductsGrid";
 
 const meta = {
   title: "Components/ProductsGrid",
