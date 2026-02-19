@@ -74,3 +74,9 @@ export const selectCategoriesLoading = (state: RootState) =>
 export const selectCategoriesError = (state: RootState) =>
   state.categories.error;
 export const selectFilters = (state: RootState) => state.filters;
+
+export const selectAuthUser = (state: RootState) => state.auth.user;
+export const selectAuthLoading = (state: RootState) => state.auth.isLoading;
+export const selectAuthError = (state: RootState) => state.auth.error;
+export const selectAuthInitialized = (state: RootState) =>
+  state.auth.isInitialized;

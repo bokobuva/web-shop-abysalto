@@ -6,6 +6,7 @@ import filtersReducer from "@/store/filtersSlice";
 import sortReducer from "@/store/sortSlice";
 import searchReducer from "@/store/searchSlice";
 import paginationReducer from "@/store/paginationSlice";
+import { authReducer } from "@/store/authSlice";
 
 export const store = configureStore({
   reducer: {
@@ -15,6 +16,7 @@ export const store = configureStore({
     sort: sortReducer,
     search: searchReducer,
     pagination: paginationReducer,
+    auth: authReducer,
   },
 });
 
@@ -35,4 +37,10 @@ export { setCategory, setPriceRange, resetFilters } from "@/store/filtersSlice";
 export { setSortOption } from "@/store/sortSlice";
 export { setSearchQuery } from "@/store/searchSlice";
 export { setCurrentPage, resetPagination } from "@/store/paginationSlice";
+export {
+  setUser,
+  setAuthLoading,
+  setAuthError,
+  setAuthInitialized,
+} from "@/store/authSlice";
 export * from "@/store/selectors";
