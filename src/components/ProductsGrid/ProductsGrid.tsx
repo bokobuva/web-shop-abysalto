@@ -1,6 +1,7 @@
 import { Product } from "@/app/shared/types";
 
-import { Card } from "@/components/Card";
+import { ProductCard } from "@/components/ProductCard";
+import { LoadingSpinner } from "@/components/icons";
 
 type ProductsGridProps = {
   products?: Product[];
@@ -39,10 +40,7 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
         aria-label="Loading products"
         className="flex min-h-[200px] items-center justify-center"
       >
-        <div
-          className="h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-gray-800 dark:border-gray-700 dark:border-t-gray-200"
-          aria-hidden="true"
-        />
+        <LoadingSpinner />
       </div>
     );
   }
@@ -66,7 +64,7 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
       className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
     >
       {products.map((product, index) => (
-        <Card
+        <ProductCard
           key={product.id}
           id={product.id}
           title={product.name}
@@ -75,6 +73,7 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
           price={product.price}
           onClick={() => onProductClick?.(product)}
           priority={index < 6}
+          product={product}
         />
       ))}
     </div>

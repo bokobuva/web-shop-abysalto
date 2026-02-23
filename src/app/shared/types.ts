@@ -45,3 +45,11 @@ export type LoginResponse = AuthUser & {
   accessToken: string;
   refreshToken: string;
 };
+
+export type CartItem = {
+  productId: string;
+  quantity: number;
+  name: string;
+  price: number;
+  image: string;
+};

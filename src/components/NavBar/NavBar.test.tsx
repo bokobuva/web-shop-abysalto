@@ -7,8 +7,9 @@ import { configureStore } from "@reduxjs/toolkit";
 import type { AuthUser } from "@/app/shared/types";
 
 import { authReducer } from "@/store/authSlice";
+import { cartReducer } from "@/store/cartSlice";
 
-import { AuthBar } from "./AuthBar";
+import { NavBar } from "./NavBar";
 
 const mockUser: AuthUser = {
   id: 1,
@@ -19,9 +20,18 @@ const mockUser: AuthUser = {
   image: "https://example.com/avatar.jpg",
 };
 
-const createStore = (user: AuthUser | null) =>
+const createStore = (
+  user: AuthUser | null,
+  cartItems: {
+    productId: string;
+    quantity: number;
+    name: string;
+    price: number;
+    image: string;
+  }[] = [],
+) =>
   configureStore({
-    reducer: { auth: authReducer },
+    reducer: { auth: authReducer, cart: cartReducer },
     preloadedState: {
       auth: {
         user,
@@ -29,13 +39,23 @@ const createStore = (user: AuthUser | null) =>
         error: null,
         isInitialized: true,
       },
+      cart: { items: cartItems },
     },
   });
 
-const renderWithRedux = (user: AuthUser | null) =>
+const renderWithRedux = (
+  user: AuthUser | null,
+  cartItems: {
+    productId: string;
+    quantity: number;
+    name: string;
+    price: number;
+    image: string;
+  }[] = [],
+) =>
   render(
-    <Provider store={createStore(user)}>
-      <AuthBar />
+    <Provider store={createStore(user, cartItems)}>
+      <NavBar />
     </Provider>,
   );
 
@@ -44,7 +64,7 @@ jest.mock("@/hooks/useAuth", () => ({
   useAuth: () => mockUseAuth(),
 }));
 
-describe("AuthBar", () => {
+describe("NavBar", () => {
   it("shows Log in when user is null", () => {
     mockUseAuth.mockReturnValue({
       user: null,
@@ -96,5 +116,31 @@ describe("AuthBar", () => {
     expect(
       screen.getByLabelText(/loading authentication/i),
     ).toBeInTheDocument();
+  });
+
+  it("shows cart badge when cart has items", () => {
+    mockUseAuth.mockReturnValue({
+      user: null,
+      logout: jest.fn(),
+      isInitialized: true,
+    });
+
+    renderWithRedux(null, [
+      { productId: "1", quantity: 3, name: "Product", price: 10, image: "" },
+    ]);
+    expect(screen.getByLabelText(/3 items in cart/i)).toHaveTextContent("3");
+  });
+
+  it("hides cart badge when cart is empty", () => {
+    mockUseAuth.mockReturnValue({
+      user: null,
+      logout: jest.fn(),
+      isInitialized: true,
+    });
+
+    renderWithRedux(null);
+    expect(
+      screen.queryByLabelText(/\d+ items in cart/i),
+    ).not.toBeInTheDocument();
   });
 });

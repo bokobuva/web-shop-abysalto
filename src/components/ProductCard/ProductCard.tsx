@@ -1,8 +1,11 @@
 import Image from "next/image";
 
+import type { Product } from "@/app/shared/types";
+
+import { AddToCartControls } from "@/components/AddToCartControls";
 import { Button } from "@/components/Button";
 
-type CardProps = {
+type ProductCardProps = {
   title: string;
   description: string;
   image: string;
@@ -11,6 +14,7 @@ type CardProps = {
   maxDescriptionLength?: number;
   id?: string;
   priority?: boolean;
+  product?: Product;
 };
 
 const DEFAULT_MAX_DESCRIPTION_LENGTH = 100;
@@ -23,7 +27,7 @@ const truncateDescription = (
   return `${description.slice(0, maxLength)}...`;
 };
 
-export const Card: React.FC<CardProps> = ({
+export const ProductCard: React.FC<ProductCardProps> = ({
   title,
   description,
   image,
@@ -32,19 +36,20 @@ export const Card: React.FC<CardProps> = ({
   maxDescriptionLength = DEFAULT_MAX_DESCRIPTION_LENGTH,
   id,
   priority = false,
+  product,
 }) => {
   const truncatedDescription = truncateDescription(
     description,
     maxDescriptionLength,
   );
   const titleId = id
-    ? `card-title-${id}`
-    : `card-title-${title.replace(/\s+/g, "-")}`;
+    ? `product-card-title-${id}`
+    : `product-card-title-${title.replace(/\s+/g, "-")}`;
 
   return (
     <article
-      className="card rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md dark:border-gray-700 dark:bg-gray-900"
-      data-testid="card"
+      className="product-card rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md dark:border-gray-700 dark:bg-gray-900 flex flex-col justify-between"
+      data-testid="product-card"
       aria-labelledby={titleId}
     >
       <Image
@@ -61,16 +66,22 @@ export const Card: React.FC<CardProps> = ({
       <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
         {truncatedDescription}
       </p>
-      <div className="mt-4 flex items-center justify-between">
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
         <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
           ${price.toFixed(2)}
         </p>
-        <Button
-          label="Details"
-          onClick={onClick}
-          dataTestId={id ? `card-details-${id}` : "card-details-button"}
-          ariaLabel={`View details for ${title}`}
-        />
+        <div className="flex items-center gap-2 justify-between w-full">
+          <Button
+            onClick={onClick}
+            dataTestId={
+              id ? `product-card-details-${id}` : "product-card-details-button"
+            }
+            ariaLabel={`View details for ${title}`}
+          >
+            Details
+          </Button>
+          {product && <AddToCartControls product={product} />}
+        </div>
       </div>
     </article>
   );

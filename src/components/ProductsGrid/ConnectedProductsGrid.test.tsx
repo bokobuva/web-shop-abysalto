@@ -21,6 +21,7 @@ import filtersReducer from "@/store/filtersSlice";
 import sortReducer from "@/store/sortSlice";
 import searchReducer from "@/store/searchSlice";
 import paginationReducer from "@/store/paginationSlice";
+import { cartReducer } from "@/store/cartSlice";
 
 import { ConnectedProductsGrid } from "@/components/ProductsGrid/ConnectedProductsGrid";
 
@@ -48,6 +49,7 @@ const createStore = (products: Product[]) =>
       sort: sortReducer,
       search: searchReducer,
       pagination: paginationReducer,
+      cart: cartReducer,
     },
     preloadedState: {
       products: {

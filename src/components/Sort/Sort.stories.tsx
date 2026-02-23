@@ -11,11 +11,10 @@ import filtersReducer from "@/store/filtersSlice";
 import sortReducer from "@/store/sortSlice";
 import searchReducer from "@/store/searchSlice";
 
-import { SearchAndSort } from "@/components/SearchAndSort";
+import { Sort } from "@/components/Sort";
 
 const createStore = (preloadedState?: {
   sort?: { sortOptionId: SortOptionId };
-  search?: { searchQuery: string };
 }) =>
   configureStore({
     reducer: {
@@ -27,13 +26,13 @@ const createStore = (preloadedState?: {
     },
     preloadedState: {
       sort: preloadedState?.sort ?? { sortOptionId: "default" },
-      search: preloadedState?.search ?? { searchQuery: "" },
+      search: { searchQuery: "" },
     },
   });
 
-const meta: Meta<typeof SearchAndSort> = {
-  title: "Components/SearchAndSort",
-  component: SearchAndSort,
+const meta: Meta<typeof Sort> = {
+  title: "Components/Sort",
+  component: Sort,
   parameters: {
     layout: "padded",
   },
@@ -51,16 +50,6 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
-
-export const WithSearchQuery: Story = {
-  decorators: [
-    (Story) => (
-      <Provider store={createStore({ search: { searchQuery: "mascara" } })}>
-        <Story />
-      </Provider>
-    ),
-  ],
-};
 
 export const WithPriceAscSelected: Story = {
   decorators: [

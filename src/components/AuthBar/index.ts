@@ -1,1 +1,0 @@
-export { AuthBar } from "./AuthBar";

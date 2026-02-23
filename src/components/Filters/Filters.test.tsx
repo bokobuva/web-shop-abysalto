@@ -119,20 +119,21 @@ describe("Filters", () => {
     ).toBeInTheDocument();
   });
 
-  it("renders price range radio group", () => {
+  it("renders price range select with options", () => {
     renderWithRedux();
     expect(
-      screen.getByRole("radiogroup", { name: /price range/i }),
+      screen.getByLabelText(/select price range to filter/i),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("radio", { name: /price range: \$10 – \$50/i }),
+      screen.getByRole("option", { name: /all price ranges/i }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("radio", { name: /price range: \$50 – \$100/i }),
+      screen.getByRole("option", { name: /\$10 – \$50/ }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("radio", { name: /price range: \$100\+/i }),
+      screen.getByRole("option", { name: /\$50 – \$100/ }),
     ).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: /\$100\+/ })).toBeInTheDocument();
   });
 
   it("does not show reset button when no filters applied", () => {
@@ -159,14 +160,11 @@ describe("Filters", () => {
     ).toBeInTheDocument();
   });
 
-  it("updates price range when radio selected", async () => {
+  it("updates price range when select changed", async () => {
     renderWithRedux();
-    await userEvent.click(
-      screen.getByRole("radio", { name: /price range: \$10 – \$50/i }),
-    );
-    expect(
-      screen.getByRole("radio", { name: /price range: \$10 – \$50/i }),
-    ).toHaveAttribute("aria-checked", "true");
+    const select = screen.getByLabelText(/select price range to filter/i);
+    await userEvent.selectOptions(select, "10-50");
+    expect(select).toHaveValue("10-50");
     expect(
       screen.getByRole("button", { name: /clear all filters/i }),
     ).toBeInTheDocument();
@@ -178,64 +176,23 @@ describe("Filters", () => {
       screen.getByRole("button", { name: /clear all filters/i }),
     );
     expect(screen.getByLabelText(/select category to filter/i)).toHaveValue("");
+    expect(screen.getByLabelText(/select price range to filter/i)).toHaveValue(
+      "",
+    );
     expect(
       screen.queryByRole("button", { name: /clear all filters/i }),
     ).not.toBeInTheDocument();
   });
 
-  it("makes all price range options focusable via Tab", async () => {
+  it("price range select is focusable via Tab", async () => {
     renderWithRedux();
     const user = userEvent.setup();
 
     const categorySelect = screen.getByLabelText(/select category to filter/i);
-    const price10_50 = screen.getByRole("radio", {
-      name: /price range: \$10 – \$50/i,
-    });
-    const price50_100 = screen.getByRole("radio", {
-      name: /price range: \$50 – \$100/i,
-    });
-    const price100plus = screen.getByRole("radio", {
-      name: /price range: \$100\+/i,
-    });
+    const priceSelect = screen.getByLabelText(/select price range to filter/i);
 
     categorySelect.focus();
     await user.tab();
-    expect(price10_50).toHaveFocus();
-    await user.tab();
-    expect(price50_100).toHaveFocus();
-    await user.tab();
-    expect(price100plus).toHaveFocus();
-  });
-
-  it("selects price range on Enter key", async () => {
-    renderWithRedux();
-    const user = userEvent.setup();
-
-    const price50_100 = screen.getByRole("radio", {
-      name: /price range: \$50 – \$100/i,
-    });
-    price50_100.focus();
-    await user.keyboard("{Enter}");
-
-    expect(price50_100).toHaveAttribute("aria-checked", "true");
-    expect(
-      screen.getByRole("button", { name: /clear all filters/i }),
-    ).toBeInTheDocument();
-  });
-
-  it("selects price range on Space key", async () => {
-    renderWithRedux();
-    const user = userEvent.setup();
-
-    const price100plus = screen.getByRole("radio", {
-      name: /price range: \$100\+/i,
-    });
-    price100plus.focus();
-    await user.keyboard(" ");
-
-    expect(price100plus).toHaveAttribute("aria-checked", "true");
-    expect(
-      screen.getByRole("button", { name: /clear all filters/i }),
-    ).toBeInTheDocument();
+    expect(priceSelect).toHaveFocus();
   });
 });

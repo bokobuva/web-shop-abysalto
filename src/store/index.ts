@@ -7,6 +7,7 @@ import sortReducer from "@/store/sortSlice";
 import searchReducer from "@/store/searchSlice";
 import paginationReducer from "@/store/paginationSlice";
 import { authReducer } from "@/store/authSlice";
+import { cartReducer } from "@/store/cartSlice";
 
 export const store = configureStore({
   reducer: {
@@ -17,6 +18,7 @@ export const store = configureStore({
     search: searchReducer,
     pagination: paginationReducer,
     auth: authReducer,
+    cart: cartReducer,
   },
 });
 
@@ -43,4 +45,11 @@ export {
   setAuthError,
   setAuthInitialized,
 } from "@/store/authSlice";
+export {
+  addToCart,
+  updateQuantity,
+  removeFromCart,
+  clearCart,
+  setCart,
+} from "@/store/cartSlice";
 export * from "@/store/selectors";

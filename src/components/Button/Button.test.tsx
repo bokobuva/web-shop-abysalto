@@ -4,15 +4,12 @@ import userEvent from "@testing-library/user-event";
 import { Button } from "@/components/Button";
 
 describe("Button", () => {
-  it("renders label and calls onClick when clicked", async () => {
+  it("renders children and calls onClick when clicked", async () => {
     const onClick = jest.fn();
     render(
-      <Button
-        label="Details"
-        onClick={onClick}
-        dataTestId="btn"
-        ariaLabel="View details"
-      />,
+      <Button onClick={onClick} dataTestId="btn" ariaLabel="View details">
+        Details
+      </Button>,
     );
     const button = screen.getByRole("button", { name: /view details/i });
     expect(button).toHaveTextContent("Details");
@@ -23,12 +20,13 @@ describe("Button", () => {
   it("is disabled when disabled prop is true", () => {
     render(
       <Button
-        label="Details"
         onClick={jest.fn()}
         dataTestId="btn"
         ariaLabel="View details"
         disabled
-      />,
+      >
+        Details
+      </Button>,
     );
     expect(screen.getByRole("button")).toBeDisabled();
   });

@@ -4,6 +4,8 @@ import { useState } from "react";
 
 import { useAuth } from "@/hooks/useAuth";
 
+import { Button } from "@/components/Button";
+
 type LoginFormProps = {
   onClose: () => void;
   onSuccess?: () => void;
@@ -88,14 +90,14 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSuccess }) => {
         >
           {isLoading ? "Logging in…" : "Log in"}
         </button>
-        <button
-          type="button"
+        <Button
           onClick={onClose}
+          dataTestId="login-cancel"
+          ariaLabel="Cancel"
           disabled={isLoading}
-          className="cursor-pointer rounded-lg border border-gray-200 px-4 py-2 font-medium transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-400 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:hover:bg-gray-800"
         >
           Cancel
-        </button>
+        </Button>
       </div>
     </form>
   );

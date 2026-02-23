@@ -12,12 +12,9 @@ import filtersReducer from "@/store/filtersSlice";
 import sortReducer from "@/store/sortSlice";
 import searchReducer from "@/store/searchSlice";
 
-import { SearchAndSort } from "@/components/SearchAndSort";
+import { Search } from "@/components/Search";
 
-const createStore = (preloadedState?: {
-  sort?: { sortOptionId: SortOptionId };
-  search?: { searchQuery: string };
-}) =>
+const createStore = (preloadedState?: { search?: { searchQuery: string } }) =>
   configureStore({
     reducer: {
       products: productsReducer,
@@ -27,34 +24,26 @@ const createStore = (preloadedState?: {
       search: searchReducer,
     },
     preloadedState: {
-      sort: preloadedState?.sort ?? { sortOptionId: "default" },
+      sort: { sortOptionId: "default" as SortOptionId },
       search: preloadedState?.search ?? { searchQuery: "" },
     },
   });
 
 const renderWithRedux = (preloadedState?: {
-  sort?: { sortOptionId: SortOptionId };
   search?: { searchQuery: string };
 }) => {
   const store = createStore(preloadedState);
   return {
     ...render(
       <Provider store={store}>
-        <SearchAndSort />
+        <Search />
       </Provider>,
     ),
     store,
   };
 };
 
-describe("SearchAndSort", () => {
-  it("renders Search and Sort section", () => {
-    renderWithRedux();
-    expect(
-      screen.getByRole("region", { name: /search and sort/i }),
-    ).toBeInTheDocument();
-  });
-
+describe("Search", () => {
   it("renders search input with placeholder", () => {
     renderWithRedux();
     const input = screen.getByPlaceholderText(/search products by name/i);
@@ -62,13 +51,10 @@ describe("SearchAndSort", () => {
     expect(input).toHaveAttribute("data-testid", "search-products");
   });
 
-  it("renders sort select with options", () => {
+  it("renders Search heading", () => {
     renderWithRedux();
-    const select = screen.getByLabelText(/select sort order/i);
-    expect(select).toBeInTheDocument();
-    expect(select).toHaveAttribute("data-testid", "sort-by");
     expect(
-      screen.getByRole("option", { name: /default/i }),
+      screen.getByRole("heading", { name: /search/i }),
     ).toBeInTheDocument();
   });
 
@@ -84,18 +70,5 @@ describe("SearchAndSort", () => {
     const input = screen.getByPlaceholderText(/search products by name/i);
     await userEvent.type(input, "test");
     expect(store.getState().search.searchQuery).toBe("test");
-  });
-
-  it("shows default sort selected when initial state is default", () => {
-    renderWithRedux();
-    const select = screen.getByLabelText(/select sort order/i);
-    expect(select).toHaveValue("default");
-  });
-
-  it("dispatches setSortOption when option changed", async () => {
-    const { store } = renderWithRedux();
-    const select = screen.getByLabelText(/select sort order/i);
-    await userEvent.selectOptions(select, "price-desc");
-    expect(store.getState().sort.sortOptionId).toBe("price-desc");
   });
 });

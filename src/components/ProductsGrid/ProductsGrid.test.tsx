@@ -1,8 +1,12 @@
 import { render, screen } from "@testing-library/react";
+import { Provider } from "react-redux";
+
+import { configureStore } from "@reduxjs/toolkit";
 
 import type { Product } from "@/app/shared/types";
 
 import { ProductsGrid } from "@/components/ProductsGrid";
+import { cartReducer } from "@/store/cartSlice";
 
 const mockProduct: Product = {
   id: "1",
@@ -45,7 +49,15 @@ describe("ProductsGrid", () => {
   });
 
   it("renders products when products array has items", () => {
-    render(<ProductsGrid products={[mockProduct]} />);
+    const store = configureStore({
+      reducer: { cart: cartReducer },
+      preloadedState: { cart: { items: [] } },
+    });
+    render(
+      <Provider store={store}>
+        <ProductsGrid products={[mockProduct]} />
+      </Provider>,
+    );
     expect(
       screen.getByRole("region", { name: /product listing/i }),
     ).toBeInTheDocument();

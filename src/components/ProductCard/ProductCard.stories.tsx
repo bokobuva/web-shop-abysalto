@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { fn } from "storybook/test";
 
-import { Card } from "@/components/Card";
+import { ProductCard } from "@/components/ProductCard";
 
 const meta = {
-  title: "Components/Card",
-  component: Card,
+  title: "Components/ProductCard",
+  component: ProductCard,
   parameters: {
     layout: "centered",
   },
@@ -21,7 +21,7 @@ const meta = {
     price: 9.99,
     onClick: fn(),
   },
-} satisfies Meta<typeof Card>;
+} satisfies Meta<typeof ProductCard>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

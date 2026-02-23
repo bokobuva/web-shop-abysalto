@@ -1,5 +1,5 @@
 type ButtonProps = {
-  label: string;
+  children: React.ReactNode;
   onClick: () => void;
   dataTestId: string;
   ariaLabel: string;
@@ -7,7 +7,7 @@ type ButtonProps = {
 };
 
 export const Button: React.FC<ButtonProps> = ({
-  label,
+  children,
   onClick,
   dataTestId,
   ariaLabel,
@@ -21,9 +21,9 @@ export const Button: React.FC<ButtonProps> = ({
       data-testid={dataTestId}
       aria-label={ariaLabel}
       aria-disabled={disabled}
-      className="cursor-pointer rounded-lg border border-gray-200 px-4 py-2 font-medium transition duration-100 ease-in-out hover:enabled:scale-[1.08] focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700"
+      className="cursor-pointer rounded-lg border border-gray-700 bg-gray-800 px-4 py-2 font-medium text-white transition duration-100 ease-in-out hover:enabled:scale-[1.08] hover:enabled:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600"
     >
-      {label}
+      {children}
     </button>
   );
 };

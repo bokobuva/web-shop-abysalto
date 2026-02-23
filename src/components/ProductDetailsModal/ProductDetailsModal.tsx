@@ -2,6 +2,7 @@ import Image from "next/image";
 
 import type { Product } from "@/app/shared/types";
 
+import { AddToCartControls } from "@/components/AddToCartControls";
 import { Modal } from "@/components/Modal";
 
 type ProductDetailsModalProps = {
@@ -39,9 +40,12 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
       <p id={descId} className="mb-4 text-gray-600 dark:text-gray-400">
         {product.description}
       </p>
-      <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-        ${product.price.toFixed(2)}
-      </p>
+      <div className="flex flex-wrap items-center gap-4 justify-between w-full">
+        <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+          ${product.price.toFixed(2)}
+        </p>
+        <AddToCartControls product={product} onAddToCart={onClose} />
+      </div>
     </Modal>
   );
 };

@@ -55,17 +55,20 @@ const renderWithRedux = () =>
   );
 
 describe("Controls", () => {
-  it("renders Filters with header", () => {
+  it("renders Filters section", () => {
     renderWithRedux();
     expect(
-      screen.getByRole("heading", { name: /filters/i }),
+      screen.getByRole("region", { name: /product filters/i }),
     ).toBeInTheDocument();
   });
 
-  it("renders SearchAndSort section", () => {
+  it("renders Search and Sort sections", () => {
     renderWithRedux();
     expect(
-      screen.getByRole("region", { name: /search and sort/i }),
+      screen.getByRole("region", { name: /search products/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("region", { name: /sort products/i }),
     ).toBeInTheDocument();
   });
 

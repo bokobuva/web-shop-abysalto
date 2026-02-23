@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 import { AuthProvider } from "@/app/providers/AuthProvider";
+import { CartPersistenceProvider } from "@/app/providers/CartPersistenceProvider";
 import { QueryProvider } from "@/app/providers/QueryProvider";
 import { ReduxProvider } from "@/app/providers/ReduxProvider";
 
@@ -34,7 +35,9 @@ export default function RootLayout({
       >
         <QueryProvider>
           <ReduxProvider>
-            <AuthProvider>{children}</AuthProvider>
+            <AuthProvider>
+              <CartPersistenceProvider>{children}</CartPersistenceProvider>
+            </AuthProvider>
           </ReduxProvider>
         </QueryProvider>
       </body>

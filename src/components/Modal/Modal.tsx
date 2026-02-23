@@ -1,6 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
+
+import { useBackdropClick } from "@/hooks/useBackdropClick";
+
+import { Button } from "@/components/Button";
 
 type ModalProps = {
   isOpen: boolean;
@@ -18,15 +22,7 @@ export const Modal: React.FC<ModalProps> = ({
   ariaDescribedBy,
 }) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
-
-  const handleBackdropClick = useCallback(
-    (e: React.MouseEvent<HTMLDialogElement>) => {
-      if (e.target === e.currentTarget) {
-        onClose();
-      }
-    },
-    [onClose],
-  );
+  const handleBackdropClick = useBackdropClick<HTMLDialogElement>(onClose);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -54,14 +50,15 @@ export const Modal: React.FC<ModalProps> = ({
         className="fixed left-1/2 top-1/2 max-h-[90vh] w-full max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-auto rounded-lg border border-gray-200 bg-white p-6 shadow-xl dark:border-gray-700 dark:bg-gray-900"
       >
         {children}
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Close modal"
-          className="text-white mt-4 w-full rounded-lg border border-gray-200 px-4 py-2 font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:border-gray-700 dark:hover:bg-gray-800"
-        >
-          Close
-        </button>
+        <div className="mt-4 w-full flex justify-end">
+          <Button
+            onClick={onClose}
+            dataTestId="modal-close"
+            ariaLabel="Close modal"
+          >
+            Close
+          </Button>
+        </div>
       </div>
     </dialog>
   );

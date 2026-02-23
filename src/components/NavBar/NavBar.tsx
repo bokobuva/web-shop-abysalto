@@ -2,15 +2,21 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 import { useAuth } from "@/hooks/useAuth";
+import { selectCartTotalCount } from "@/store/selectors";
 
+import { Button } from "@/components/Button";
+import { CartDropdown } from "@/components/CartDropdown";
+import { CartIcon } from "@/components/icons";
 import { LoginForm } from "@/components/LoginForm";
 import { Modal } from "@/components/Modal";
 
-export const AuthBar: React.FC = () => {
+export const NavBar: React.FC = () => {
   const { user, logout, isInitialized } = useAuth();
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const cartTotalCount = useSelector(selectCartTotalCount);
 
   if (!isInitialized) {
     return (
@@ -23,7 +29,20 @@ export const AuthBar: React.FC = () => {
 
   return (
     <>
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-4">
+        <CartDropdown>
+          <div className="relative flex cursor-pointer items-center justify-center text-gray-900 dark:text-zinc-50">
+            <CartIcon />
+            {cartTotalCount > 0 && (
+              <span
+                className="absolute -bottom-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-xs font-bold text-white"
+                aria-label={`${cartTotalCount} items in cart`}
+              >
+                {cartTotalCount > 99 ? "99+" : cartTotalCount}
+              </span>
+            )}
+          </div>
+        </CartDropdown>
         {user ? (
           <>
             <div className="flex items-center gap-2">
@@ -40,22 +59,22 @@ export const AuthBar: React.FC = () => {
                 {user.firstName} {user.lastName}
               </span>
             </div>
-            <button
-              type="button"
+            <Button
               onClick={logout}
-              className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm font-medium transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:border-gray-700 dark:hover:bg-gray-800"
+              dataTestId="navbar-logout"
+              ariaLabel="Log out"
             >
               Log out
-            </button>
+            </Button>
           </>
         ) : (
-          <button
-            type="button"
+          <Button
             onClick={() => setShowLoginModal(true)}
-            className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm font-medium transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:border-gray-700 dark:hover:bg-gray-800"
+            dataTestId="navbar-login"
+            ariaLabel="Log in"
           >
             Log in
-          </button>
+          </Button>
         )}
       </div>
 

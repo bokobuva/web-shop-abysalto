@@ -80,3 +80,9 @@ export const selectAuthLoading = (state: RootState) => state.auth.isLoading;
 export const selectAuthError = (state: RootState) => state.auth.error;
 export const selectAuthInitialized = (state: RootState) =>
   state.auth.isInitialized;
+
+export const selectCartItems = (state: RootState) => state.cart.items;
+
+export const selectCartTotalCount = createSelector([selectCartItems], (items) =>
+  items.reduce((sum, i) => sum + i.quantity, 0),
+);

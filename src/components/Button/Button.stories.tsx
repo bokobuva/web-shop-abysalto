@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { fn } from "storybook/test";
 
 import { Button } from "@/components/Button";
+import { TrashIcon } from "@/components/icons";
 
 const meta = {
   title: "Components/Button",
@@ -11,7 +12,6 @@ const meta = {
   },
   tags: ["autodocs"],
   argTypes: {
-    label: { control: "text" },
     dataTestId: { control: "text" },
     ariaLabel: { control: "text" },
     disabled: { control: "boolean" },
@@ -26,7 +26,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    label: "Details",
+    children: "Details",
     dataTestId: "button-details",
     ariaLabel: "View product details",
   },
@@ -34,7 +34,7 @@ export const Default: Story = {
 
 export const LongLabel: Story = {
   args: {
-    label: "View Product Details",
+    children: "View Product Details",
     dataTestId: "button-view-details",
     ariaLabel: "View full product details",
   },
@@ -42,7 +42,7 @@ export const LongLabel: Story = {
 
 export const ShortLabel: Story = {
   args: {
-    label: "OK",
+    children: "OK",
     dataTestId: "button-ok",
     ariaLabel: "Confirm",
   },
@@ -50,7 +50,7 @@ export const ShortLabel: Story = {
 
 export const Accessible: Story = {
   args: {
-    label: "Add to Cart",
+    children: "Add to Cart",
     dataTestId: "button-add-to-cart",
     ariaLabel: "Add this product to your shopping cart",
   },
@@ -58,9 +58,17 @@ export const Accessible: Story = {
 
 export const Disabled: Story = {
   args: {
-    label: "Details",
+    children: "Details",
     dataTestId: "button-disabled",
     ariaLabel: "View product details",
     disabled: true,
+  },
+};
+
+export const IconOnly: Story = {
+  args: {
+    children: <TrashIcon size={20} />,
+    dataTestId: "button-trash",
+    ariaLabel: "Remove item",
   },
 };

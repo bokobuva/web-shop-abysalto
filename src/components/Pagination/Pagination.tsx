@@ -21,12 +21,13 @@ export const Pagination: React.FC<PaginationProps> = ({
       className="mt-6 flex items-center justify-center gap-4"
     >
       <Button
-        label="Previous"
         onClick={handlePrevious}
         dataTestId="pagination-prev"
         ariaLabel="Go to previous page"
         disabled={currentPage <= 1}
-      />
+      >
+        Previous
+      </Button>
       <span
         className="text-sm text-gray-600 dark:text-gray-400"
         aria-live="polite"
@@ -34,12 +35,13 @@ export const Pagination: React.FC<PaginationProps> = ({
         Page {currentPage} of {totalPages}
       </span>
       <Button
-        label="Next"
         onClick={handleNext}
         dataTestId="pagination-next"
         ariaLabel="Go to next page"
         disabled={currentPage >= totalPages}
-      />
+      >
+        Next
+      </Button>
     </nav>
   );
 };

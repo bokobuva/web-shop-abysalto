@@ -1,6 +1,6 @@
 "use client";
 
-import { AuthBar } from "@/components/AuthBar";
+import { NavBar } from "@/components/NavBar";
 import { Controls } from "@/components/Controls";
 import { ConnectedProductsGrid } from "@/components/ProductsGrid/ConnectedProductsGrid";
 import { useSyncProductsToRedux } from "@/hooks/useSyncProductsToRedux";
@@ -15,7 +15,7 @@ export default function Home() {
           <h1 className="text-xl font-semibold tracking-tight text-black dark:text-zinc-50 sm:text-2xl">
             Abysalto&apos;s Web Shop
           </h1>
-          <AuthBar />
+          <NavBar />
         </div>
       </header>
       <main
