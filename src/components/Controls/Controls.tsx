@@ -13,13 +13,8 @@ export const Controls: React.FC = () => {
       >
         <Search />
       </section>
-      <div className="flex w-full flex-col gap-6 md:flex-row sm:items-stretch sm:justify-between">
-        <section
-          aria-label="Sort products"
-          className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-900 flex gap-4 flex-col"
-        >
-          <Sort />
-        </section>
+      <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-900  gap-6 flex w-full flex-col gap-6 md:flex-row sm:items-stretch sm:justify-between">
+        <Sort />
         <Filters />
       </div>
     </div>

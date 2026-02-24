@@ -1,5 +1,19 @@
+import { SORT_OPTIONS } from "@/app/shared/constants";
 import type { Product } from "@/app/shared/types";
 import type { SortOptionId } from "@/app/shared/types";
+
+function compareProductValues(
+  valueA: string | number,
+  valueB: string | number,
+  order: "asc" | "desc",
+): number {
+  const isAscending = order === "asc";
+  const comparison =
+    typeof valueA === "number"
+      ? valueA - (valueB as number)
+      : (valueA as string).localeCompare(valueB as string);
+  return isAscending ? comparison : -comparison;
+}
 
 export function sortProducts(
   products: Product[] | undefined,
@@ -8,17 +22,17 @@ export function sortProducts(
   if (products === undefined) return undefined;
   if (sortOptionId === "default") return products;
 
-  const sorted = products.slice();
-  switch (sortOptionId) {
-    case "price-asc":
-      return sorted.sort((a, b) => a.price - b.price);
-    case "price-desc":
-      return sorted.sort((a, b) => b.price - a.price);
-    case "name-asc":
-      return sorted.sort((a, b) => a.name.localeCompare(b.name));
-    case "name-desc":
-      return sorted.sort((a, b) => b.name.localeCompare(a.name));
-    default:
-      return products;
-  }
+  const selectedOption = SORT_OPTIONS.find(
+    (option) => option.id === sortOptionId,
+  );
+  const canSort =
+    selectedOption && "sortBy" in selectedOption && "order" in selectedOption;
+  if (!canSort || !selectedOption) return products;
+
+  const { sortBy, order } = selectedOption;
+  const sortedCopy = products.slice();
+
+  return sortedCopy.sort((productA, productB) =>
+    compareProductValues(productA[sortBy], productB[sortBy], order),
+  );
 }

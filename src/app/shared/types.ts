@@ -1,3 +1,6 @@
+import type { PRICE_RANGES } from "@/app/shared/constants";
+import type { SORT_OPTIONS } from "@/app/shared/constants";
+
 export type Product = {
   id: string;
   name: string;
@@ -12,22 +15,7 @@ export type Category = {
   name: string;
 };
 
-export const PRICE_RANGES = [
-  { id: "10-50", label: "$10 – $50", min: 10, max: 50 },
-  { id: "50-100", label: "$50 – $100", min: 50, max: 100 },
-  { id: "100+", label: "$100+", min: 100, max: Infinity },
-] as const;
-
 export type PriceRangeId = (typeof PRICE_RANGES)[number]["id"];
-
-export const SORT_OPTIONS = [
-  { id: "default", label: "Default" },
-  { id: "price-asc", label: "Price: Low to High" },
-  { id: "price-desc", label: "Price: High to Low" },
-  { id: "name-asc", label: "Name: A to Z" },
-  { id: "name-desc", label: "Name: Z to A" },
-] as const;
-
 export type SortOptionId = (typeof SORT_OPTIONS)[number]["id"];
 
 export type AuthUser = {

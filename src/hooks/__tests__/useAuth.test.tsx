@@ -112,10 +112,11 @@ describe("useAuth", () => {
       expect(result.current.isInitialized).toBe(true);
     });
 
-    await act(async () => {
-      await result.current.login("emilys", "emilyspass");
-    });
+    const success = await act(async () =>
+      result.current.login("emilys", "emilyspass"),
+    );
 
+    expect(success).toBe(true);
     expect(result.current.user).toEqual(mockUser);
     expect(mockAuthApi.login).toHaveBeenCalledWith({
       username: "emilys",
@@ -133,14 +134,11 @@ describe("useAuth", () => {
       expect(result.current.isInitialized).toBe(true);
     });
 
-    await act(async () => {
-      try {
-        await result.current.login("wrong", "wrong");
-      } catch {
-        // expected
-      }
-    });
+    const success = await act(async () =>
+      result.current.login("wrong", "wrong"),
+    );
 
+    expect(success).toBe(false);
     await waitFor(() => {
       expect(result.current.error).toBe("Invalid credentials");
     });

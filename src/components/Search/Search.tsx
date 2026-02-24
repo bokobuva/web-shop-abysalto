@@ -4,11 +4,19 @@ import { useDispatch, useSelector } from "react-redux";
 
 import type { RootState } from "@/store";
 import { setSearchQuery } from "@/store/searchSlice";
+import { useCallback } from "react";
 
 export const Search: React.FC = () => {
   const dispatch = useDispatch();
   const searchQuery = useSelector(
     (state: RootState) => state.search.searchQuery,
+  );
+
+  const handleSearchInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      dispatch(setSearchQuery(e.target.value));
+    },
+    [dispatch],
   );
 
   return (
@@ -23,7 +31,7 @@ export const Search: React.FC = () => {
         type="search"
         id="search-products"
         value={searchQuery}
-        onChange={(e) => dispatch(setSearchQuery(e.target.value))}
+        onChange={(e) => handleSearchInputChange(e)}
         placeholder="Search products by name"
         aria-label="Search products by name"
         data-testid="search-products"

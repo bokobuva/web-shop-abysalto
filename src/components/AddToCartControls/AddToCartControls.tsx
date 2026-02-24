@@ -15,12 +15,13 @@ type AddToCartControlsProps = {
 };
 
 const MIN_QUANTITY = 1;
-const MAX_QUANTITY = 999;
+const MAX_QUANTITY = 999; // TODO: Discuss business logic with PO for max quantity and implement safe max limit
 
 export const AddToCartControls: React.FC<AddToCartControlsProps> = ({
   product,
   onAddToCart,
 }) => {
+  const { id } = product;
   const dispatch = useDispatch();
   const quantityInputId = useId();
   const [quantity, setQuantity] = useState(MIN_QUANTITY);
@@ -43,7 +44,7 @@ export const AddToCartControls: React.FC<AddToCartControlsProps> = ({
     <div className="flex items-center gap-2">
       <input
         id={quantityInputId}
-        name={`quantity-${product.id}`}
+        name={`quantity-${id}`}
         type="number"
         min={MIN_QUANTITY}
         max={MAX_QUANTITY}

@@ -19,7 +19,7 @@ export function useProductModal() {
     [searchParams],
   );
 
-  const product = useSelector((state: RootState) =>
+  const selectedProduct = useSelector((state: RootState) =>
     selectProductById(state, selectedProductId),
   );
 
@@ -41,7 +41,7 @@ export function useProductModal() {
 
   return {
     selectedProductId,
-    product,
+    selectedProduct,
     openProduct,
     closeProduct,
   };

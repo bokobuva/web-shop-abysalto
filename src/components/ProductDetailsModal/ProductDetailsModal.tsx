@@ -16,8 +16,10 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
 }) => {
   if (!product) return null;
 
-  const titleId = `product-details-title-${product.id}`;
-  const descId = `product-details-desc-${product.id}`;
+  const { id, name, description, image, price } = product;
+  const titleId = `product-details-title-${id}`;
+  const fixedPrice = price.toFixed(2);
+  const descId = `product-details-desc-${id}`;
 
   return (
     <Modal
@@ -27,22 +29,22 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
       ariaDescribedBy={descId}
     >
       <Image
-        src={product.image}
-        alt={product.name}
+        src={image}
+        alt={name}
         width={400}
         height={400}
         className="mb-4 w-full rounded-lg object-cover"
         loading="eager"
       />
       <h2 id={titleId} className="mb-2 text-xl font-semibold text-white">
-        {product.name}
+        {name}
       </h2>
       <p id={descId} className="mb-4 text-gray-600 dark:text-gray-400">
-        {product.description}
+        {description}
       </p>
       <div className="flex flex-wrap items-center gap-4 justify-between w-full">
         <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-          ${product.price.toFixed(2)}
+          ${fixedPrice}
         </p>
         <AddToCartControls product={product} onAddToCart={onClose} />
       </div>

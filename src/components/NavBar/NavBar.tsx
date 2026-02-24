@@ -17,6 +17,8 @@ export const NavBar: React.FC = () => {
   const { user, logout, isInitialized } = useAuth();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const cartTotalCount = useSelector(selectCartTotalCount);
+  const cartBadgeText = cartTotalCount > 99 ? "99+" : cartTotalCount;
+  const { image: userImage, firstName = "", lastName = "" } = user ?? {};
 
   if (!isInitialized) {
     return (
@@ -38,7 +40,7 @@ export const NavBar: React.FC = () => {
                 className="absolute -bottom-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-xs font-bold text-white"
                 aria-label={`${cartTotalCount} items in cart`}
               >
-                {cartTotalCount > 99 ? "99+" : cartTotalCount}
+                {cartBadgeText}
               </span>
             )}
           </div>
@@ -46,17 +48,17 @@ export const NavBar: React.FC = () => {
         {user ? (
           <>
             <div className="flex items-center gap-2">
-              {user.image && (
+              {userImage && (
                 <Image
-                  src={user.image}
+                  src={userImage}
                   alt=""
                   width={32}
                   height={32}
                   className="h-8 w-8 rounded-full object-cover"
                 />
               )}
-              <span className="text-sm font-medium text-gray-900 dark:text-zinc-50">
-                {user.firstName} {user.lastName}
+              <span className="text-sm font-medium text-gray-900 dark:text-zinc-50 hidden sm:block">
+                {firstName} {lastName}
               </span>
             </div>
             <Button

@@ -15,15 +15,15 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSuccess }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const { login, isLoading, error } = useAuth();
+  const errorDescribedBy = error ? "login-error" : undefined;
+  const submitButtonText = isLoading ? "Logging in…" : "Log in";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      await login(username, password);
+    const success = await login(username, password);
+    if (success) {
       onSuccess?.();
       onClose();
-    } catch {
-      // Error is handled by useAuth and displayed below
     }
   };
 
@@ -50,7 +50,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSuccess }) => {
           required
           autoComplete="username"
           disabled={isLoading}
-          aria-describedby={error ? "login-error" : undefined}
+          aria-describedby={errorDescribedBy}
           className="rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
         />
       </div>
@@ -69,7 +69,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSuccess }) => {
           required
           autoComplete="current-password"
           disabled={isLoading}
-          aria-describedby={error ? "login-error" : undefined}
+          aria-describedby={errorDescribedBy}
           className="rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
         />
       </div>
@@ -88,7 +88,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSuccess }) => {
           disabled={isLoading}
           className="cursor-pointer rounded-lg border border-gray-700 bg-gray-800 px-4 py-2 font-medium text-white transition hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600"
         >
-          {isLoading ? "Logging in…" : "Log in"}
+          {submitButtonText}
         </button>
         <Button
           onClick={onClose}

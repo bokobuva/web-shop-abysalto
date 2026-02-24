@@ -1,5 +1,5 @@
-import type { Product } from "@/app/shared/types";
-import { PRICE_RANGES, type PriceRangeId } from "@/app/shared/types";
+import { PRICE_RANGES } from "@/app/shared/constants";
+import type { PriceRangeId, Product } from "@/app/shared/types";
 
 export function filterByCategory(
   product: Product,

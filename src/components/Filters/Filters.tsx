@@ -2,13 +2,15 @@
 
 import { useDispatch, useSelector } from "react-redux";
 
-import { PRICE_RANGES, type PriceRangeId } from "@/app/shared/types";
+import { PRICE_RANGES } from "@/app/shared/constants";
+import type { PriceRangeId } from "@/app/shared/types";
 import { selectCategories, selectFilters } from "@/store/selectors";
 import { setCategory, setPriceRange } from "@/store";
 import { resetFilters } from "@/store/filtersSlice";
 
 import { Button } from "@/components/Button";
 import { LoadingSpinner } from "@/components/icons";
+import { useCallback } from "react";
 
 export const Filters: React.FC = () => {
   const dispatch = useDispatch();
@@ -17,20 +19,34 @@ export const Filters: React.FC = () => {
 
   const hasActiveFilters = categorySlug !== null || priceRangeId !== null;
 
-  const handleResetFilters = () => {
+  const handlePriceRangeSelectChange = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      dispatch(setPriceRange((e.target.value || null) as PriceRangeId | null));
+    },
+    [dispatch],
+  );
+
+  const handleFilterSelectChange = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      dispatch(setCategory(e.target.value || null));
+    },
+    [dispatch],
+  );
+
+  const handleResetFilters = useCallback(() => {
     const categorySelect = document.getElementById("filter-category");
     if (categorySelect instanceof HTMLElement) {
       categorySelect.focus();
     }
     dispatch(resetFilters());
-  };
+  }, [dispatch]);
 
   return (
     <section
       aria-label="Product filters"
-      className="flex flex-1 min-h-0 flex-1 flex-col rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-900"
+      className="flex flex-1 min-h-0 flex-1 flex-col bg-white shadow-sm dark:border-gray-700 dark:bg-gray-900"
     >
-      <div className="flex w-full flex-col gap-6 md:flex-row sm:flex-wrap">
+      <div className="flex w-full h-full flex-col gap-6 md:flex-row sm:flex-wrap">
         <fieldset className="flex shrink-0 flex-col gap-2">
           <legend className="sr-only">Filter by category</legend>
           {categories === undefined ? (
@@ -59,19 +75,19 @@ export const Filters: React.FC = () => {
                 <select
                   id="filter-category"
                   value={categorySlug ?? ""}
-                  onChange={(e) =>
-                    dispatch(setCategory(e.target.value || null))
-                  }
+                  onChange={(e) => handleFilterSelectChange(e)}
                   aria-label="Select category to filter products"
                   data-testid="filter-category"
                   className="w-full cursor-pointer rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
                 >
                   <option value="">All categories</option>
-                  {categories.map((cat) => (
-                    <option key={cat.slug} value={cat.slug}>
-                      {cat.name}
-                    </option>
-                  ))}
+                  {categories.map((category) => {
+                    return (
+                      <option key={category.slug} value={category.slug}>
+                        {category.name}
+                      </option>
+                    );
+                  })}
                 </select>
               </div>
             </>
@@ -90,29 +106,25 @@ export const Filters: React.FC = () => {
             <select
               id="filter-price"
               value={priceRangeId ?? ""}
-              onChange={(e) =>
-                dispatch(
-                  setPriceRange(
-                    (e.target.value || null) as PriceRangeId | null,
-                  ),
-                )
-              }
+              onChange={(e) => handlePriceRangeSelectChange(e)}
               aria-label="Select price range to filter products"
               data-testid="filter-price"
               className="w-full cursor-pointer rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
             >
               <option value="">All price ranges</option>
-              {PRICE_RANGES.map((range) => (
-                <option key={range.id} value={range.id}>
-                  {range.label}
-                </option>
-              ))}
+              {PRICE_RANGES.map((range) => {
+                return (
+                  <option key={range.id} value={range.id}>
+                    {range.label}
+                  </option>
+                );
+              })}
             </select>
           </div>
         </fieldset>
 
         {hasActiveFilters && (
-          <div className="flex shrink-0 items-center">
+          <div className="flex shrink-0 items-end">
             <Button
               onClick={handleResetFilters}
               dataTestId="filter-reset"

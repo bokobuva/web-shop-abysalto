@@ -26,32 +26,36 @@ export const CartItem: React.FC<CartItemProps> = ({
   onQuantityChange,
   onDelete,
 }) => {
+  const { productId, name, quantity, price, image } = item;
   const [showConfirm, setShowConfirm] = useState(false);
 
   const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.valueAsNumber;
     if (!Number.isNaN(value)) {
       const qty = Math.min(MAX_QUANTITY, Math.max(MIN_QUANTITY, value));
-      onQuantityChange(item.productId, qty);
+      onQuantityChange(productId, qty);
     }
   };
 
   const handleConfirmDelete = () => {
-    onDelete(item.productId);
+    onDelete(productId);
     setShowConfirm(false);
   };
+
+  const fixedItemPrice = price.toFixed(2);
+  const fixedItemTotalPrice = (price * quantity).toFixed(2);
 
   return (
     <>
       <article
         className="flex gap-3 border-b border-gray-200 px-3 py-3 last:border-b-0 dark:border-gray-700"
-        data-testid={`cart-item-${item.productId}`}
+        data-testid={`cart-item-${productId}`}
       >
         <div className="h-14 w-14 shrink-0 overflow-hidden rounded-md bg-gray-100 dark:bg-gray-800">
-          {item.image ? (
+          {image ? (
             <Image
-              src={item.image}
-              alt={`${item.name} image`}
+              src={image}
+              alt={`${name} image`}
               width={70}
               height={70}
               className="h-full w-full object-cover"
@@ -65,29 +69,28 @@ export const CartItem: React.FC<CartItemProps> = ({
         </div>
         <div className="min-w-0 flex-1">
           <h3 className="truncate text-sm font-medium text-gray-900 dark:text-zinc-50">
-            {item.name}
+            {name}
           </h3>
           <p className="text-xs text-gray-500 dark:text-gray-400">
-            ${item.price.toFixed(2)} × {item.quantity} = $
-            {(item.price * item.quantity).toFixed(2)}
+            ${fixedItemPrice} × {quantity} = ${fixedItemTotalPrice}
           </p>
           <div className="mt-2 flex flex-wrap items-center gap-2 w-full justify-end">
             <input
-              id={`cart-item-quantity-${item.productId}`}
-              name={`cart-quantity-${item.productId}`}
+              id={`cart-item-quantity-${productId}`}
+              name={`cart-quantity-${productId}`}
               type="number"
               min={MIN_QUANTITY}
               max={MAX_QUANTITY}
-              value={item.quantity}
+              value={quantity}
               onChange={handleQuantityChange}
-              aria-label={`Quantity for ${item.name}`}
-              data-testid={`cart-item-quantity-${item.productId}`}
+              aria-label={`Quantity for ${name}`}
+              data-testid={`cart-item-quantity-${productId}`}
               className="w-14 h-full rounded border border-gray-200 px-1.5 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
             />
             <Button
               onClick={() => setShowConfirm(true)}
-              dataTestId={`cart-item-delete-${item.productId}`}
-              ariaLabel={`Remove ${item.name} from cart`}
+              dataTestId={`cart-item-delete-${productId}`}
+              ariaLabel={`Remove ${name} from cart`}
             >
               <TrashIcon size={18} />
             </Button>

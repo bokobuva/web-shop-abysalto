@@ -22,10 +22,6 @@ import {
 const REFRESH_BEFORE_EXPIRY_SEC = 5 * 60;
 const DEFAULT_REFRESH_IN_MS = 55 * 60 * 1000;
 
-function scheduleRefresh(callback: () => Promise<void>): number {
-  return window.setTimeout(callback, DEFAULT_REFRESH_IN_MS);
-}
-
 export function useAuth() {
   const dispatch = useDispatch();
   const user = useSelector(selectAuthUser);
@@ -137,7 +133,7 @@ export function useAuth() {
   }, [clearRefreshTimeout]);
 
   const login = useCallback(
-    async (username: string, password: string) => {
+    async (username: string, password: string): Promise<boolean> => {
       dispatch(setAuthError(null));
       dispatch(setAuthLoading(true));
       try {
@@ -145,11 +141,12 @@ export function useAuth() {
         const { accessToken: _a, refreshToken: _r, ...user } = data;
         dispatch(setUser(user));
         scheduleNextRefresh();
+        return true;
       } catch (err) {
         const message = err instanceof Error ? err.message : "Login failed";
         dispatch(setAuthError(message));
         dispatch(setUser(null));
-        throw err;
+        return false;
       } finally {
         dispatch(setAuthLoading(false));
       }

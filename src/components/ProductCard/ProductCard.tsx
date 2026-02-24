@@ -45,6 +45,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const titleId = id
     ? `product-card-title-${id}`
     : `product-card-title-${title.replace(/\s+/g, "-")}`;
+  const imageLoading = priority ? "eager" : "lazy";
+  const fixedPrice = price.toFixed(2);
+  const detailsButtonTestId = id
+    ? `product-card-details-${id}`
+    : "product-card-details-button";
 
   return (
     <article
@@ -58,7 +63,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         width={200}
         height={200}
         className="ml-auto mr-auto"
-        loading={priority ? "eager" : "lazy"}
+        loading={imageLoading}
       />
       <h2 id={titleId} className="mt-2 font-semibold">
         {title}
@@ -68,14 +73,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       </p>
       <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
         <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-          ${price.toFixed(2)}
+          ${fixedPrice}
         </p>
         <div className="flex items-center gap-2 justify-between w-full">
           <Button
             onClick={onClick}
-            dataTestId={
-              id ? `product-card-details-${id}` : "product-card-details-button"
-            }
+            dataTestId={detailsButtonTestId}
             ariaLabel={`View details for ${title}`}
           >
             Details

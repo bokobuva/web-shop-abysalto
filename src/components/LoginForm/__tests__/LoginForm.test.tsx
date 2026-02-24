@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 
@@ -6,9 +6,26 @@ import { configureStore } from "@reduxjs/toolkit";
 
 import type { AuthUser } from "@/app/shared/types";
 
+import * as authApi from "@/app/services/auth";
+import { getTokens } from "@/lib/auth/tokenStorage";
+
 import { authReducer } from "@/store/authSlice";
 
 import { LoginForm } from "../LoginForm";
+
+const mockAuthApi = authApi as jest.Mocked<typeof authApi>;
+const mockGetTokens = getTokens as jest.MockedFunction<typeof getTokens>;
+
+let useRealAuth = false;
+jest.mock("@/hooks/useAuth", () => {
+  const actual =
+    jest.requireActual<typeof import("@/hooks/useAuth")>("@/hooks/useAuth");
+  return {
+    useAuth: () => (useRealAuth ? actual.useAuth() : mockUseAuth()),
+  };
+});
+jest.mock("@/app/services/auth");
+jest.mock("@/lib/auth/tokenStorage");
 
 const createStore = (
   authState?: Partial<{
@@ -35,8 +52,9 @@ const renderWithRedux = (
   props: { onClose: () => void; onSuccess?: () => void } = {
     onClose: jest.fn(),
   },
+  storeOverride?: ReturnType<typeof createStore>,
 ) => {
-  const store = createStore();
+  const store = storeOverride ?? createStore();
   return {
     ...render(
       <Provider store={store}>
@@ -47,7 +65,7 @@ const renderWithRedux = (
   };
 };
 
-const mockLogin = jest.fn().mockResolvedValue(undefined);
+const mockLogin = jest.fn().mockResolvedValue(true);
 type UseAuthMockReturn = {
   login: jest.Mock;
   isLoading: boolean;
@@ -58,17 +76,19 @@ const mockUseAuth = jest.fn<UseAuthMockReturn, []>(() => ({
   isLoading: false,
   error: null,
 }));
-jest.mock("@/hooks/useAuth", () => ({
-  useAuth: () => mockUseAuth(),
-}));
 
 describe("LoginForm", () => {
   beforeEach(() => {
+    useRealAuth = false;
     mockUseAuth.mockReturnValue({
       login: mockLogin,
       isLoading: false,
       error: null,
     });
+  });
+
+  afterEach(() => {
+    useRealAuth = false;
   });
 
   it("renders username and password inputs", () => {
@@ -118,5 +138,25 @@ describe("LoginForm", () => {
     renderWithRedux({ onClose });
     await user.click(screen.getByRole("button", { name: /cancel/i }));
     expect(onClose).toHaveBeenCalled();
+  });
+
+  it("shows error when login fails on submit", async () => {
+    useRealAuth = true;
+    mockGetTokens.mockReturnValue(null);
+    mockAuthApi.login.mockRejectedValue(new Error("Invalid credentials"));
+
+    const store = createStore({ isInitialized: false });
+    const user = userEvent.setup();
+    renderWithRedux({ onClose: jest.fn() }, store);
+
+    await user.type(screen.getByLabelText(/username/i), "wrong");
+    await user.type(screen.getByLabelText(/password/i), "wrong");
+    await user.click(screen.getByRole("button", { name: /log in/i }));
+
+    await waitFor(() => {
+      expect(screen.getByRole("alert")).toHaveTextContent(
+        "Invalid credentials",
+      );
+    });
   });
 });

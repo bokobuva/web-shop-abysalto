@@ -50,17 +50,17 @@ describe("useProductModal", () => {
     mockSearchParams = new URLSearchParams();
   });
 
-  it("returns selectedProductId null and product null when no query param", () => {
+  it("returns selectedProductId null and selectedProduct null when no query param", () => {
     const { result } = renderHook(() => useProductModal(), { wrapper });
     expect(result.current.selectedProductId).toBeNull();
-    expect(result.current.product).toBeNull();
+    expect(result.current.selectedProduct).toBeNull();
   });
 
-  it("returns product when searchParams has product id", () => {
+  it("returns selectedProduct when searchParams has product id", () => {
     mockSearchParams.set("product", "1");
     const { result } = renderHook(() => useProductModal(), { wrapper });
     expect(result.current.selectedProductId).toBe("1");
-    expect(result.current.product).toEqual(mockProducts[0]);
+    expect(result.current.selectedProduct).toEqual(mockProducts[0]);
   });
 
   it("openProduct calls router.replace with product param", () => {

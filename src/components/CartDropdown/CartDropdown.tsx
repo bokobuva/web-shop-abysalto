@@ -28,6 +28,8 @@ export const CartDropdown: React.FC<CartDropdownProps> = ({ children }) => {
     dispatch(removeFromCart({ productId }));
   };
 
+  const cartAriaLabel = `Cart with ${cartTotalCount} items`;
+
   const content =
     items.length === 0 ? (
       <p className="px-4 py-6 text-center text-sm text-gray-600 dark:text-gray-400">
@@ -35,23 +37,21 @@ export const CartDropdown: React.FC<CartDropdownProps> = ({ children }) => {
       </p>
     ) : (
       <div className="flex flex-col">
-        {items.map((item) => (
-          <CartItem
-            key={item.productId}
-            item={item}
-            onQuantityChange={handleQuantityChange}
-            onDelete={handleDelete}
-          />
-        ))}
+        {items.map((item) => {
+          return (
+            <CartItem
+              key={item.productId}
+              item={item}
+              onQuantityChange={handleQuantityChange}
+              onDelete={handleDelete}
+            />
+          );
+        })}
       </div>
     );
 
   return (
-    <Dropdown
-      trigger={children}
-      ariaLabel={`Cart with ${cartTotalCount} items`}
-      placement="bottom-end"
-    >
+    <Dropdown trigger={children} ariaLabel={cartAriaLabel}>
       {content}
     </Dropdown>
   );

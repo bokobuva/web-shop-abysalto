@@ -11,16 +11,9 @@ type DropdownProps = {
   ariaLabel?: string;
 };
 
-const placementClasses = {
-  "bottom-start": "left-0 top-full mt-1",
-  "bottom-end": "right-0 top-full mt-1",
-  bottom: "left-1/2 -translate-x-1/2 top-full mt-1",
-};
-
 export const Dropdown: React.FC<DropdownProps> = ({
   trigger,
   children,
-  placement = "bottom-end",
   ariaLabel,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -99,7 +92,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
       {isOpen && (
         <div
           role="menu"
-          className={`absolute z-50 min-w-[280px] max-w-[min(400px,calc(100vw-32px))] max-h-[70vh] overflow-y-auto rounded-lg border border-gray-200 bg-white py-2 shadow-lg dark:border-gray-700 dark:bg-gray-900 ${placementClasses[placement]}`}
+          className={`absolute z-50 min-w-[280px] max-w-[min(400px,calc(100vw-32px))] max-h-[70vh] overflow-y-auto rounded-lg border border-gray-200 bg-white py-2 shadow-lg dark:border-gray-700 dark:bg-gray-900 right-0 top-full mt-1`}
         >
           {children}
         </div>

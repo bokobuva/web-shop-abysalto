@@ -46,9 +46,9 @@ const renderWithRedux = (preloadedState?: {
 };
 
 describe("Sort", () => {
-  it("renders Sort heading", () => {
+  it("renders Sort by label", () => {
     renderWithRedux();
-    expect(screen.getByRole("heading", { name: /sort/i })).toBeInTheDocument();
+    expect(screen.getByText("Sort by")).toBeInTheDocument();
   });
 
   it("renders sort select with options", () => {

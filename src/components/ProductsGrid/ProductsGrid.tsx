@@ -63,19 +63,21 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
       aria-label="Product listing"
       className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
     >
-      {products.map((product, index) => (
-        <ProductCard
-          key={product.id}
-          id={product.id}
-          title={product.name}
-          description={product.description}
-          image={product.image}
-          price={product.price}
-          onClick={() => onProductClick?.(product)}
-          priority={index < 6}
-          product={product}
-        />
-      ))}
+      {products.map((product, index) => {
+        return (
+          <ProductCard
+            key={product.id}
+            id={product.id}
+            title={product.name}
+            description={product.description}
+            image={product.image}
+            price={product.price}
+            onClick={() => onProductClick?.(product)}
+            priority={index < 6}
+            product={product}
+          />
+        );
+      })}
     </div>
   );
 };

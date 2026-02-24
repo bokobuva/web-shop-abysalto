@@ -5,8 +5,10 @@ export function searchProducts(
   searchQuery: string,
 ): Product[] | undefined {
   if (products === undefined) return undefined;
-  const trimmed = searchQuery.trim();
-  if (trimmed === "") return products;
-  const lower = trimmed.toLowerCase();
-  return products.filter((p) => p.name.toLowerCase().includes(lower));
+  const trimmedSearchQuery = searchQuery.trim();
+  if (trimmedSearchQuery === "") return products;
+  const lowerCaseSearchQuery = trimmedSearchQuery.toLowerCase();
+  return products.filter((product) =>
+    product.name.toLowerCase().includes(lowerCaseSearchQuery),
+  );
 }

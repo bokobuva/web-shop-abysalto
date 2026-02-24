@@ -24,17 +24,3 @@ export const Default: Story = {
     ),
   },
 };
-
-export const BottomStart: Story = {
-  args: {
-    ...Default.args,
-    placement: "bottom-start",
-  },
-};
-
-export const BottomEnd: Story = {
-  args: {
-    ...Default.args,
-    placement: "bottom-end",
-  },
-};
