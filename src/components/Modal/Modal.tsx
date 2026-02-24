@@ -22,14 +22,18 @@ export const Modal: React.FC<ModalProps> = ({
   ariaDescribedBy,
 }) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
   const handleBackdropClick = useBackdropClick<HTMLDialogElement>(onClose);
 
   useEffect(() => {
     if (!isOpen) return;
+    previousFocusRef.current = document.activeElement as HTMLElement | null;
     const dialog = dialogRef.current;
     if (dialog) dialog.showModal();
     return () => {
       dialog?.close();
+      const previouslyFocused = previousFocusRef.current;
+      queueMicrotask(() => previouslyFocused?.focus());
     };
   }, [isOpen]);
 

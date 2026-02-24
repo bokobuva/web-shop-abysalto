@@ -1,4 +1,6 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { useState } from "react";
 
 import { Modal } from "./Modal";
 
@@ -77,5 +79,34 @@ describe("Modal", () => {
     );
     fireEvent.click(screen.getByText("Content"));
     expect(onClose).not.toHaveBeenCalled();
+  });
+
+  it("returns focus to trigger when modal closes", async () => {
+    const user = userEvent.setup();
+    const TestWrapper = () => {
+      const [open, setOpen] = useState(false);
+      return (
+        <>
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            data-testid="trigger"
+          >
+            Open
+          </button>
+          <Modal isOpen={open} onClose={() => setOpen(false)}>
+            <p>Content</p>
+          </Modal>
+        </>
+      );
+    };
+    render(<TestWrapper />);
+    const trigger = screen.getByTestId("trigger");
+    await user.click(trigger);
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /close modal/i }));
+    await waitFor(() => {
+      expect(trigger).toHaveFocus();
+    });
   });
 });
