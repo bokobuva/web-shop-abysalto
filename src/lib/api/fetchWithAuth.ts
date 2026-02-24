@@ -1,5 +1,5 @@
 import { getTokens } from "@/lib/auth/tokenStorage";
-import * as authApi from "@/app/api/auth";
+import * as authApi from "@/app/services/auth";
 
 /**
  * Fetches a URL with the current access token in the Authorization header.

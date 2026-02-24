@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import * as authApi from "@/app/api/auth";
+import * as authApi from "@/app/services/auth";
 import { getJwtExpiry } from "@/lib/auth/jwtUtils";
 import { getTokens } from "@/lib/auth/tokenStorage";
 import {

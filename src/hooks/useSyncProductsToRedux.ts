@@ -2,8 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
-import { fetchCategories } from "@/app/api/categories";
-import { fetchProducts } from "@/app/api/products";
+import { fetchCategories } from "@/app/services/categories";
+import { fetchProducts } from "@/app/services/products";
 import {
   setCategories,
   setCategoriesError,

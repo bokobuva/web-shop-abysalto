@@ -14,9 +14,8 @@ import {
   selectPriceRangeId,
   selectSearchQuery,
   selectSortOptionId,
-  resetPagination,
-  setCurrentPage,
-} from "@/store";
+} from "@/store/selectors";
+import { resetPagination, setCurrentPage } from "@/store";
 
 import { useProductModal } from "@/hooks/useProductModal";
 

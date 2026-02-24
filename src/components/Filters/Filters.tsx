@@ -3,12 +3,8 @@
 import { useDispatch, useSelector } from "react-redux";
 
 import { PRICE_RANGES, type PriceRangeId } from "@/app/shared/types";
-import {
-  selectCategories,
-  selectFilters,
-  setCategory,
-  setPriceRange,
-} from "@/store";
+import { selectCategories, selectFilters } from "@/store/selectors";
+import { setCategory, setPriceRange } from "@/store";
 import { resetFilters } from "@/store/filtersSlice";
 
 import { Button } from "@/components/Button";

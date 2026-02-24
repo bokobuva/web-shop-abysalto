@@ -52,4 +52,3 @@ export {
   clearCart,
   setCart,
 } from "@/store/cartSlice";
-export * from "@/store/selectors";
