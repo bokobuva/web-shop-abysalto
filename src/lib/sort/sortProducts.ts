@@ -15,6 +15,11 @@ function compareProductValues(
   return isAscending ? comparison : -comparison;
 }
 
+/**
+ * Sorts products by the given sort option (SORT_OPTIONS).
+ * Returns products unchanged when sortOptionId is "default" or unknown.
+ * Does not mutate the input array.
+ */
 export function sortProducts(
   products: Product[] | undefined,
   sortOptionId: SortOptionId,

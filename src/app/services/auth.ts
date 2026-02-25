@@ -7,6 +7,11 @@ import { clearTokens, setTokens } from "@/lib/auth/tokenStorage";
 
 const AUTH_BASE = "https://dummyjson.com/auth";
 
+/**
+ * Posts credentials to DummyJSON /auth/login.
+ * On success, stores tokens in sessionStorage and returns user + tokens.
+ * Throws with API error message or status text when response is not ok.
+ */
 export async function login(
   credentials: LoginCredentials,
 ): Promise<LoginResponse> {
@@ -34,6 +39,10 @@ export async function login(
   return data;
 }
 
+/**
+ * Fetches the current user from DummyJSON /auth/me using the access token.
+ * Throws when the response is not ok.
+ */
 export async function getMe(accessToken: string): Promise<AuthUser> {
   const response = await fetch(`${AUTH_BASE}/me`, {
     method: "GET",
@@ -54,6 +63,11 @@ export type RefreshResponse = {
   refreshToken: string;
 };
 
+/**
+ * Refreshes tokens via DummyJSON /auth/refresh.
+ * Stores new tokens in sessionStorage and returns them.
+ * Throws when refresh fails.
+ */
 export async function refreshToken(
   refreshTokenValue: string,
 ): Promise<RefreshResponse> {
@@ -75,6 +89,9 @@ export async function refreshToken(
   return data;
 }
 
+/**
+ * Clears access and refresh tokens from sessionStorage.
+ */
 export function logout(): void {
   clearTokens();
 }

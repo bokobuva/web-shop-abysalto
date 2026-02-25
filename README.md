@@ -66,3 +66,4 @@ For production, use a **backend proxy** and **httpOnly cookies**. See [ARCHITECT
 
 - **[ARCHITECTURE.md](ARCHITECTURE.md)** — Tech stack, data flow, auth, product listing, cart, Husky, security, accessibility
 - **[TESTS.md](TESTS.md)** — Test coverage details (~220 tests across 34 files)
+- JSDoc on shared utilities and services for editor IntelliSense

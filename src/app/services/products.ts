@@ -28,6 +28,10 @@ function mapToProduct(dto: DummyJsonProduct): Product {
   };
 }
 
+/**
+ * Fetches products from DummyJSON, maps to Product type.
+ * Throws when the response is not ok.
+ */
 export async function fetchProducts(): Promise<Product[]> {
   const response = await fetch("https://dummyjson.com/products");
 

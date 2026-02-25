@@ -189,6 +189,12 @@ For production, use a **backend proxy** and **httpOnly cookies**.
 - CSP, X-Frame-Options, HSTS in production
 - Rate limiting and CAPTCHA on login
 
+## Shared Function Documentation (JSDoc)
+
+We add JSDoc to exported shared functions in `lib/`, `app/services/`, and composed selectors in `store/selectors.ts`. This provides IntelliSense hints for consumers across the codebase.
+
+Style: A single `/** ... */` block above each function describing behavior and edge cases (null, undefined, SSR). No `@param` or `@returns` tags unless clarity is needed.
+
 ## Code Philosophy: Readability Over Minimization
 
 We prefer clear, maintainable code. Example: `sortProducts` uses `SORT_OPTIONS` as a single source of truth instead of a switch with duplicated IDs. Adding a new sort = one new object in `SORT_OPTIONS`; no changes to `sortProducts` or the Sort dropdown.

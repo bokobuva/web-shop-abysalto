@@ -6,6 +6,10 @@ type DummyJsonCategory = {
   url?: string;
 };
 
+/**
+ * Fetches categories from DummyJSON, maps to Category type (slug, name).
+ * Throws when the response is not ok.
+ */
 export async function fetchCategories(): Promise<Category[]> {
   const response = await fetch("https://dummyjson.com/products/categories");
 

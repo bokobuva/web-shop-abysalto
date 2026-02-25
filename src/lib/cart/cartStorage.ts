@@ -2,6 +2,10 @@ import { CART_KEY } from "@/app/shared/constants";
 
 import type { CartItem } from "@/app/shared/types";
 
+/**
+ * Returns cart items from localStorage, validated against CartItem shape.
+ * Returns empty array on SSR, missing data, invalid JSON, or invalid items.
+ */
 export function getStoredCart(): CartItem[] {
   if (typeof window === "undefined") return [];
   try {
@@ -24,6 +28,10 @@ export function getStoredCart(): CartItem[] {
   }
 }
 
+/**
+ * Persists cart items to localStorage under CART_KEY.
+ * No-op when window is undefined (SSR).
+ */
 export function setStoredCart(items: CartItem[]): void {
   if (typeof window === "undefined") return;
   localStorage.setItem(CART_KEY, JSON.stringify(items));

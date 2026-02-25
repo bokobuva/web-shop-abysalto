@@ -25,6 +25,7 @@ export const selectPriceRangeId = (state: RootState) =>
 export const selectSearchQuery = (state: RootState) => state.search.searchQuery;
 export const selectSortOptionId = (state: RootState) => state.sort.sortOptionId;
 
+/** Products filtered by category and price range (via filterProducts). */
 export const selectFilteredProducts = createSelector(
   [selectProducts, selectCategorySlug, selectPriceRangeId],
   filterProducts,
@@ -35,6 +36,7 @@ const selectSearchedProducts = createSelector(
   searchProducts,
 );
 
+/** Filtered products further sorted by sort option (via sortProducts). */
 export const selectFilteredAndSortedProducts = createSelector(
   [selectSearchedProducts, selectSortOptionId],
   sortProducts,
@@ -44,22 +46,26 @@ export const selectCurrentPage = (state: RootState) =>
   state.pagination.currentPage;
 const selectPageSize = (state: RootState) => state.pagination.pageSize;
 
+/** Current page slice of filtered-and-sorted products (via paginate). */
 export const selectPaginatedProducts = createSelector(
   [selectFilteredAndSortedProducts, selectCurrentPage, selectPageSize],
   (products, page, pageSize) => paginate(products, page, pageSize),
 );
 
+/** Total count of filtered-and-sorted products (before pagination). */
 export const selectTotalFilteredCount = createSelector(
   [selectFilteredAndSortedProducts],
   (products) => products?.length ?? 0,
 );
 
+/** Number of pages given total filtered count and page size. */
 export const selectTotalPages = createSelector(
   [selectTotalFilteredCount, selectPageSize],
   (totalCount, pageSize) =>
     pageSize > 0 ? Math.ceil(totalCount / pageSize) : 0,
 );
 
+/** True when filtered results exceed page size (pagination UI should show). */
 export const selectShowPagination = createSelector(
   [selectTotalFilteredCount, selectPageSize],
   (totalCount, pageSize) => totalCount > pageSize,
@@ -83,6 +89,7 @@ export const selectAuthInitialized = (state: RootState) =>
 
 export const selectCartItems = (state: RootState) => state.cart.items;
 
+/** Sum of all cart item quantities. */
 export const selectCartTotalCount = createSelector([selectCartItems], (items) =>
   items.reduce((sum, i) => sum + i.quantity, 0),
 );
