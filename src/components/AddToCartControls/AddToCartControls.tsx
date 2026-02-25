@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useCallback, useId, useState } from "react";
 import { useDispatch } from "react-redux";
 
 import type { Product } from "@/app/shared/types";
@@ -26,12 +26,12 @@ export const AddToCartControls: React.FC<AddToCartControlsProps> = ({
   const quantityInputId = useId();
   const [quantity, setQuantity] = useState(MIN_QUANTITY);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = useCallback(() => {
     const qty = Math.min(MAX_QUANTITY, Math.max(MIN_QUANTITY, quantity));
     setQuantity(MIN_QUANTITY);
     dispatch(addToCart({ product, quantity: qty }));
     onAddToCart?.();
-  };
+  }, [dispatch, product, quantity, onAddToCart]);
 
   const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.valueAsNumber;

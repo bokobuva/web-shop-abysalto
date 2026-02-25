@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect } from "react";
+import { Suspense } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
@@ -15,9 +15,11 @@ import {
   selectSearchQuery,
   selectSortOptionId,
 } from "@/store/selectors";
-import { resetPagination, setCurrentPage } from "@/store";
+import { setCurrentPage } from "@/store";
 
+import { useCloseProductModalWhenNotFound } from "@/hooks/useCloseProductModalWhenNotFound";
 import { useProductModal } from "@/hooks/useProductModal";
+import { useResetPaginationOnFilterChange } from "@/hooks/useResetPaginationOnFilterChange";
 
 import { LoadingSpinner } from "@/components/icons";
 import { Pagination } from "@/components/Pagination";
@@ -39,15 +41,18 @@ function ConnectedProductsGridInner() {
   const searchQuery = useSelector(selectSearchQuery);
   const sortOptionId = useSelector(selectSortOptionId);
 
-  useEffect(() => {
-    dispatch(resetPagination());
-  }, [dispatch, categorySlug, priceRangeId, searchQuery, sortOptionId]);
-
-  useEffect(() => {
-    if (selectedProductId && !selectedProduct && !isLoading) {
-      closeProduct();
-    }
-  }, [selectedProductId, selectedProduct, isLoading, closeProduct]);
+  useResetPaginationOnFilterChange({
+    categorySlug,
+    priceRangeId,
+    searchQuery,
+    sortOptionId,
+  });
+  useCloseProductModalWhenNotFound(
+    selectedProductId,
+    selectedProduct,
+    isLoading,
+    closeProduct,
+  );
 
   const productsToShow = isLoading ? undefined : products;
 

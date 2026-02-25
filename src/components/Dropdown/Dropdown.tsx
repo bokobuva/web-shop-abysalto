@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { DROPDOWN_HOVER_DELAY_MS } from "@/app/shared/constants";
+import { useFocusOutside } from "@/hooks/useFocusOutside";
 
 type DropdownProps = {
   trigger: React.ReactNode;
@@ -56,19 +57,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
     return clearTimeout;
   }, [clearTimeout]);
 
-  useEffect(() => {
-    if (!isOpen) return;
-    const handleFocusIn = (e: FocusEvent) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(e.target as Node)
-      ) {
-        closeImmediate();
-      }
-    };
-    document.addEventListener("focusin", handleFocusIn);
-    return () => document.removeEventListener("focusin", handleFocusIn);
-  }, [isOpen, closeImmediate]);
+  useFocusOutside(containerRef, isOpen, closeImmediate);
 
   return (
     <div

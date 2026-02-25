@@ -1,8 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useRef } from "react";
 
 import { useBackdropClick } from "@/hooks/useBackdropClick";
+import { useModalDialog } from "@/hooks/useModalDialog";
 
 import { Button } from "@/components/Button";
 
@@ -27,18 +28,12 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
 }) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const handleBackdropClick = useBackdropClick<HTMLDialogElement>(onClose);
+  useModalDialog(isOpen, dialogRef);
 
   const handleConfirm = useCallback(() => {
     onConfirm();
     onClose();
   }, [onConfirm, onClose]);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    const dialog = dialogRef.current;
-    if (dialog) dialog.showModal();
-    return () => dialog?.close();
-  }, [isOpen]);
 
   if (!isOpen) return null;
 
