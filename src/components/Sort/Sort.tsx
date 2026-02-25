@@ -22,8 +22,8 @@ export const Sort: React.FC = () => {
   );
 
   return (
-    <section aria-label="Sort products" className="flex  flex-col gap-2">
-      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+    <section aria-label="Sort products" className="flex flex-col gap-2">
+      <span className="text-sm font-medium uppercase tracking-wide text-neutral-700 dark:text-neutral-300">
         Sort by
       </span>
       <label htmlFor="sort-by" className="sr-only">
@@ -35,7 +35,7 @@ export const Sort: React.FC = () => {
         onChange={(e) => handleSortSelectChange(e)}
         aria-label="Select sort order"
         data-testid="sort-by"
-        className="cursor-pointer rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
+        className="cursor-pointer rounded-sm border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
       >
         {SORT_OPTIONS.map((option) => {
           return (

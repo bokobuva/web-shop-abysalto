@@ -27,7 +27,7 @@ export function useProductModal() {
     (id: string) => {
       const params = new URLSearchParams(searchParams.toString());
       params.set(PRODUCT_QUERY_PARAM, id);
-      router.replace(`${pathname}?${params.toString()}`);
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
     },
     [pathname, router, searchParams],
   );
@@ -36,7 +36,9 @@ export function useProductModal() {
     const params = new URLSearchParams(searchParams.toString());
     params.delete(PRODUCT_QUERY_PARAM);
     const query = params.toString();
-    router.replace(query ? `${pathname}?${query}` : pathname);
+    router.replace(query ? `${pathname}?${query}` : pathname, {
+      scroll: false,
+    });
   }, [pathname, router, searchParams]);
 
   return {

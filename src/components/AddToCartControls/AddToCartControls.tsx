@@ -52,7 +52,7 @@ export const AddToCartControls: React.FC<AddToCartControlsProps> = ({
         onChange={handleQuantityChange}
         aria-label="Quantity"
         data-testid="add-to-cart-quantity"
-        className="w-16 rounded-lg border border-gray-200 px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
+        className="w-16 rounded-sm border border-neutral-300 px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
       />
       <Button
         onClick={handleAddToCart}

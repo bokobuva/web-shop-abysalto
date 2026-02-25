@@ -15,6 +15,7 @@ const meta = {
     dataTestId: { control: "text" },
     ariaLabel: { control: "text" },
     disabled: { control: "boolean" },
+    variant: { control: "select", options: ["primary", "outline"] },
   },
   args: {
     onClick: fn(),

@@ -32,7 +32,7 @@ export const CartDropdown: React.FC<CartDropdownProps> = ({ children }) => {
 
   const content =
     items.length === 0 ? (
-      <p className="px-4 py-6 text-center text-sm text-gray-600 dark:text-gray-400">
+      <p className="px-4 py-6 text-center text-sm text-neutral-600 dark:text-neutral-400">
         {EMPTY_MESSAGE}
       </p>
     ) : (

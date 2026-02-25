@@ -81,7 +81,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
       {isOpen && (
         <div
           role="menu"
-          className={`absolute z-50 min-w-[280px] max-w-[min(400px,calc(100vw-32px))] max-h-[70vh] overflow-y-auto rounded-lg border border-gray-200 bg-white py-2 shadow-lg dark:border-gray-700 dark:bg-gray-900 right-0 top-full mt-1`}
+          className={`absolute right-0 top-full z-50 mt-1 min-w-[280px] max-w-[min(400px,calc(100vw-32px))] max-h-[70vh] overflow-y-auto rounded-sm border border-neutral-200 bg-white py-2 shadow-lg dark:border-neutral-700 dark:bg-neutral-800`}
         >
           {children}
         </div>

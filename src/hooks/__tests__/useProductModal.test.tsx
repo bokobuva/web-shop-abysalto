@@ -68,7 +68,7 @@ describe("useProductModal", () => {
     act(() => {
       result.current.openProduct("1");
     });
-    expect(mockReplace).toHaveBeenCalledWith("/?product=1");
+    expect(mockReplace).toHaveBeenCalledWith("/?product=1", { scroll: false });
   });
 
   it("closeProduct calls router.replace without product param", () => {
@@ -77,6 +77,6 @@ describe("useProductModal", () => {
     act(() => {
       result.current.closeProduct();
     });
-    expect(mockReplace).toHaveBeenCalledWith("/");
+    expect(mockReplace).toHaveBeenCalledWith("/", { scroll: false });
   });
 });

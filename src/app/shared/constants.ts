@@ -38,3 +38,27 @@ export const SORT_OPTIONS = [
     order: "desc" as const,
   },
 ] as const;
+
+export const FOOTER_LINKS = {
+  about: [
+    { label: "Our Story", href: "/" },
+    { label: "Careers", href: "/" },
+  ],
+  support: [
+    { label: "Returns", href: "/" },
+    { label: "Shipping", href: "/" },
+    { label: "Help Center", href: "/" },
+    { label: "Contact", href: "/" },
+  ],
+  social: [
+    { id: "facebook", href: "https://facebook.com", ariaLabel: "Facebook" },
+    { id: "x", href: "https://x.com", ariaLabel: "X" },
+    { id: "instagram", href: "https://instagram.com", ariaLabel: "Instagram" },
+    { id: "youtube", href: "https://youtube.com", ariaLabel: "YouTube" },
+  ],
+  legal: [
+    { label: "Privacy Policy", href: "#" },
+    { label: "Terms & Conditions", href: "#" },
+    { label: "Accessibility Statement", href: "#" },
+  ],
+} as const;

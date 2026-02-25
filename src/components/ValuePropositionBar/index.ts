@@ -1,0 +1,1 @@
+export { ValuePropositionBar } from "./ValuePropositionBar";

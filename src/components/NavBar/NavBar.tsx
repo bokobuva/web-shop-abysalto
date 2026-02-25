@@ -23,7 +23,7 @@ export const NavBar: React.FC = () => {
   if (!isInitialized) {
     return (
       <div
-        className="h-10 w-10 animate-pulse rounded-full bg-gray-200 dark:bg-gray-700"
+        className="h-10 w-10 animate-pulse rounded-full bg-neutral-600"
         aria-label="Loading authentication"
       />
     );
@@ -33,7 +33,7 @@ export const NavBar: React.FC = () => {
     <>
       <div className="flex items-center gap-4">
         <CartDropdown>
-          <div className="relative flex cursor-pointer items-center justify-center text-gray-900 dark:text-zinc-50">
+          <div className="relative flex cursor-pointer items-center justify-center text-white">
             <CartIcon />
             {cartTotalCount > 0 && (
               <span
@@ -57,7 +57,7 @@ export const NavBar: React.FC = () => {
                   className="h-8 w-8 rounded-full object-cover"
                 />
               )}
-              <span className="text-sm font-medium text-gray-900 dark:text-zinc-50 hidden sm:block">
+              <span className="hidden text-sm font-medium text-white sm:block">
                 {firstName} {lastName}
               </span>
             </div>
@@ -65,6 +65,7 @@ export const NavBar: React.FC = () => {
               onClick={logout}
               dataTestId="navbar-logout"
               ariaLabel="Log out"
+              variant="outline"
             >
               Log out
             </Button>
@@ -74,6 +75,7 @@ export const NavBar: React.FC = () => {
             onClick={() => setShowLoginModal(true)}
             dataTestId="navbar-login"
             ariaLabel="Log in"
+            variant="outline"
           >
             Log in
           </Button>
@@ -84,6 +86,7 @@ export const NavBar: React.FC = () => {
         isOpen={showLoginModal}
         onClose={() => setShowLoginModal(false)}
         ariaLabelledBy="login-title"
+        hideCloseButton
       >
         <LoginForm
           onClose={() => setShowLoginModal(false)}

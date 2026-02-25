@@ -1,1 +1,10 @@
-export { CartIcon, LoadingSpinner, TrashIcon } from "./Icons";
+export {
+  CartIcon,
+  LoadingSpinner,
+  TrashIcon,
+  FacebookIcon,
+  XIcon,
+  InstagramIcon,
+  YouTubeIcon,
+  EnvelopeIcon,
+} from "./Icons";

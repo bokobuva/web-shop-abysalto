@@ -13,6 +13,7 @@ type ModalProps = {
   children: React.ReactNode;
   ariaLabelledBy?: string;
   ariaDescribedBy?: string;
+  hideCloseButton?: boolean;
 };
 
 export const Modal: React.FC<ModalProps> = ({
@@ -21,6 +22,7 @@ export const Modal: React.FC<ModalProps> = ({
   children,
   ariaLabelledBy,
   ariaDescribedBy,
+  hideCloseButton = false,
 }) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const handleBackdropClick = useBackdropClick<HTMLDialogElement>(onClose);
@@ -35,23 +37,25 @@ export const Modal: React.FC<ModalProps> = ({
       onCancel={onClose}
       aria-labelledby={ariaLabelledBy}
       aria-describedby={ariaDescribedBy}
-      className="fixed inset-0 z-50 m-0 max-h-none max-w-none border-0 bg-transparent p-0 backdrop:bg-black/50 [&::backdrop]:bg-black/50"
+      className="fixed inset-0 z-50 m-0 max-h-none max-w-none border-0 bg-transparent p-0 backdrop:bg-black/40 [&::backdrop]:bg-black/40"
     >
       <div
         role="document"
         onClick={(e) => e.stopPropagation()}
-        className="fixed left-1/2 top-1/2 max-h-[90vh] w-full max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-auto rounded-lg border border-gray-200 bg-white p-6 shadow-xl dark:border-gray-700 dark:bg-gray-900"
+        className="fixed left-1/2 top-1/2 max-h-[90vh] w-full max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-auto rounded-sm border border-neutral-200 bg-white p-6 shadow-xl dark:border-neutral-700 dark:bg-neutral-800"
       >
         {children}
-        <div className="mt-4 w-full flex justify-end">
-          <Button
-            onClick={onClose}
-            dataTestId="modal-close"
-            ariaLabel="Close modal"
-          >
-            Close
-          </Button>
-        </div>
+        {!hideCloseButton && (
+          <div className="mt-4 w-full flex justify-end">
+            <Button
+              onClick={onClose}
+              dataTestId="modal-close"
+              ariaLabel="Close modal"
+            >
+              Close
+            </Button>
+          </div>
+        )}
       </div>
     </dialog>
   );

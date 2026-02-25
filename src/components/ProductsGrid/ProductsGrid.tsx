@@ -50,7 +50,7 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
       <div
         role="region"
         aria-label="Empty product listing"
-        className="rounded-lg border border-dashed border-gray-300 p-12 text-center text-gray-600 dark:border-gray-600 dark:text-gray-400"
+        className="rounded-sm border border-dashed border-neutral-300 p-12 text-center text-neutral-600 dark:border-neutral-600 dark:text-neutral-400"
       >
         <p>There are no products available at this moment.</p>
       </div>
@@ -61,7 +61,7 @@ export const ProductsGrid: React.FC<ProductsGridProps> = ({
     <div
       role="region"
       aria-label="Product listing"
-      className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+      className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3"
     >
       {products.map((product, index) => {
         return (

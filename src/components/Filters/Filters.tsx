@@ -44,7 +44,7 @@ export const Filters: React.FC = () => {
   return (
     <section
       aria-label="Product filters"
-      className="flex flex-1 min-h-0 flex-1 flex-col bg-white shadow-sm dark:border-gray-700 dark:bg-gray-900"
+      className="flex min-h-0 flex-1 flex-col dark:bg-transparent"
     >
       <div className="flex w-full h-full flex-col gap-6 md:flex-row sm:flex-wrap">
         <fieldset className="flex shrink-0 flex-col gap-2">
@@ -67,7 +67,7 @@ export const Filters: React.FC = () => {
             <>
               <label
                 htmlFor="filter-category"
-                className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                className="text-sm font-medium text-neutral-700 dark:text-neutral-300"
               >
                 Filter by category
               </label>
@@ -78,7 +78,7 @@ export const Filters: React.FC = () => {
                   onChange={(e) => handleFilterSelectChange(e)}
                   aria-label="Select category to filter products"
                   data-testid="filter-category"
-                  className="w-full cursor-pointer rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
+                  className="w-full cursor-pointer rounded-sm border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
                 >
                   <option value="">All categories</option>
                   {categories.map((category) => {
@@ -98,7 +98,7 @@ export const Filters: React.FC = () => {
           <legend className="sr-only">Filter by price range</legend>
           <label
             htmlFor="filter-price"
-            className="text-sm font-medium text-gray-700 dark:text-gray-300"
+            className="text-sm font-medium text-neutral-700 dark:text-neutral-300"
           >
             Filter by price range
           </label>
@@ -109,7 +109,7 @@ export const Filters: React.FC = () => {
               onChange={(e) => handlePriceRangeSelectChange(e)}
               aria-label="Select price range to filter products"
               data-testid="filter-price"
-              className="w-full cursor-pointer rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
+              className="w-full cursor-pointer rounded-sm border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
             >
               <option value="">All price ranges</option>
               {PRICE_RANGES.map((range) => {
@@ -130,7 +130,7 @@ export const Filters: React.FC = () => {
               dataTestId="filter-reset"
               ariaLabel="Clear all filters"
             >
-              Reset filters
+              Reset
             </Button>
           </div>
         )}

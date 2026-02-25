@@ -31,14 +31,14 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSuccess }) => {
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <h2
         id="login-title"
-        className="text-lg font-semibold text-gray-900 dark:text-zinc-50"
+        className="text-lg font-semibold text-neutral-900 dark:text-neutral-100"
       >
         Log in
       </h2>
       <div className="flex flex-col gap-2">
         <label
           htmlFor="login-username"
-          className="text-sm font-medium text-gray-700 dark:text-gray-300"
+          className="text-sm font-medium text-neutral-700 dark:text-neutral-300"
         >
           Username
         </label>
@@ -51,13 +51,13 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSuccess }) => {
           autoComplete="username"
           disabled={isLoading}
           aria-describedby={errorDescribedBy}
-          className="rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
+          className="rounded-sm border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
         />
       </div>
       <div className="flex flex-col gap-2">
         <label
           htmlFor="login-password"
-          className="text-sm font-medium text-gray-700 dark:text-gray-300"
+          className="text-sm font-medium text-neutral-700 dark:text-neutral-300"
         >
           Password
         </label>
@@ -70,7 +70,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSuccess }) => {
           autoComplete="current-password"
           disabled={isLoading}
           aria-describedby={errorDescribedBy}
-          className="rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
+          className="rounded-sm border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
         />
       </div>
       {error && (
@@ -82,21 +82,21 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSuccess }) => {
           {error}
         </p>
       )}
-      <div className="flex gap-2">
+      <div className="flex justify-end gap-2">
         <button
           type="submit"
           disabled={isLoading}
-          className="cursor-pointer rounded-lg border border-gray-700 bg-gray-800 px-4 py-2 font-medium text-white transition hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600"
+          className="cursor-pointer rounded-sm border-0 bg-neutral-800 px-6 py-2.5 font-medium tracking-wide uppercase text-white transition hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-white dark:text-black dark:hover:bg-neutral-200"
         >
           {submitButtonText}
         </button>
         <Button
           onClick={onClose}
-          dataTestId="login-cancel"
-          ariaLabel="Cancel"
+          dataTestId="login-close"
+          ariaLabel="Close"
           disabled={isLoading}
         >
-          Cancel
+          Close
         </Button>
       </div>
     </form>

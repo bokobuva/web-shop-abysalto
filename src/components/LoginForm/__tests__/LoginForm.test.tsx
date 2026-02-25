@@ -97,10 +97,10 @@ describe("LoginForm", () => {
     expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
   });
 
-  it("renders Log in and Cancel buttons", () => {
+  it("renders Log in and Close buttons", () => {
     renderWithRedux();
     expect(screen.getByRole("button", { name: /log in/i })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /cancel/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /close/i })).toBeInTheDocument();
   });
 
   it("submits with credentials", async () => {
@@ -132,11 +132,11 @@ describe("LoginForm", () => {
     expect(screen.getByRole("alert")).toHaveTextContent("Invalid credentials");
   });
 
-  it("calls onClose when Cancel clicked", async () => {
+  it("calls onClose when Close clicked", async () => {
     const onClose = jest.fn();
     const user = userEvent.setup();
     renderWithRedux({ onClose });
-    await user.click(screen.getByRole("button", { name: /cancel/i }));
+    await user.click(screen.getByRole("button", { name: /close/i }));
     expect(onClose).toHaveBeenCalled();
   });
 

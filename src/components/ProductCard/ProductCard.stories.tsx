@@ -1,7 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { fn } from "storybook/test";
+import { Provider } from "react-redux";
+
+import { configureStore } from "@reduxjs/toolkit";
+
+import type { Product } from "@/app/shared/types";
 
 import { ProductCard } from "@/components/ProductCard";
+import { cartReducer } from "@/store/cartSlice";
 
 const meta = {
   title: "Components/ProductCard",
@@ -10,6 +16,18 @@ const meta = {
     layout: "centered",
   },
   tags: ["autodocs"],
+  decorators: [
+    (Story) => (
+      <Provider
+        store={configureStore({
+          reducer: { cart: cartReducer },
+          preloadedState: { cart: { items: [] } },
+        })}
+      >
+        <Story />
+      </Provider>
+    ),
+  ],
   argTypes: {
     title: { control: "text" },
     description: { control: "text" },
@@ -80,5 +98,25 @@ export const CustomMaxLength: Story = {
       "This description is truncated at 50 characters instead of the default 100.",
     image: DUMMY_IMAGE,
     maxDescriptionLength: 50,
+  },
+};
+
+const mockProduct: Product = {
+  id: "1",
+  name: "Essence Mascara Lash Princess",
+  price: 9.99,
+  image: DUMMY_IMAGE,
+  description:
+    "The Essence Mascara Lash Princess is a popular mascara known for its volumizing and lengthening effects. Achieve dramatic lashes.",
+  category: "beauty",
+};
+
+export const WithAddToCart: Story = {
+  args: {
+    title: mockProduct.name,
+    description: mockProduct.description,
+    image: mockProduct.image,
+    price: mockProduct.price,
+    product: mockProduct,
   },
 };

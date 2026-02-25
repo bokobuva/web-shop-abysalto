@@ -1,8 +1,12 @@
+"use client";
+
 import Image from "next/image";
+import { useDispatch } from "react-redux";
 
 import type { Product } from "@/app/shared/types";
 
-import { AddToCartControls } from "@/components/AddToCartControls";
+import { addToCart } from "@/store";
+
 import { Button } from "@/components/Button";
 
 type ProductCardProps = {
@@ -38,6 +42,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   priority = false,
   product,
 }) => {
+  const dispatch = useDispatch();
   const truncatedDescription = truncateDescription(
     description,
     maxDescriptionLength,
@@ -47,45 +52,59 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     : `product-card-title-${title.replace(/\s+/g, "-")}`;
   const imageLoading = priority ? "eager" : "lazy";
   const fixedPrice = price.toFixed(2);
-  const detailsButtonTestId = id
-    ? `product-card-details-${id}`
-    : "product-card-details-button";
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      onClick();
+    }
+  };
 
   return (
     <article
-      className="product-card rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md dark:border-gray-700 dark:bg-gray-900 flex flex-col justify-between"
+      className="product-card flex flex-col justify-between rounded-sm border border-neutral-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md dark:border-neutral-700 dark:bg-neutral-800"
       data-testid="product-card"
       aria-labelledby={titleId}
     >
-      <Image
-        src={image}
-        alt={title}
-        width={200}
-        height={200}
-        className="ml-auto mr-auto"
-        loading={imageLoading}
-      />
-      <h2 id={titleId} className="mt-2 font-semibold">
-        {title}
-      </h2>
-      <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-        {truncatedDescription}
-      </p>
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
-        <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={onClick}
+        onKeyDown={handleKeyDown}
+        aria-label={`View details for ${title}`}
+        className="cursor-pointer focus:outline-none focus:ring-2 focus:ring-neutral-400 focus:ring-offset-2 focus:rounded-sm"
+      >
+        <Image
+          src={image}
+          alt={title}
+          width={200}
+          height={200}
+          className="ml-auto mr-auto"
+          loading={imageLoading}
+        />
+        <h2
+          id={titleId}
+          className="mt-2 font-medium text-neutral-900 dark:text-neutral-100"
+        >
+          {title}
+        </h2>
+        <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
+          {truncatedDescription}
+        </p>
+        <p className="mt-4 text-lg font-semibold text-neutral-900 dark:text-neutral-100">
           ${fixedPrice}
         </p>
-        <div className="flex items-center gap-2 justify-between w-full">
-          <Button
-            onClick={onClick}
-            dataTestId={detailsButtonTestId}
-            ariaLabel={`View details for ${title}`}
-          >
-            Details
-          </Button>
-          {product && <AddToCartControls product={product} />}
-        </div>
       </div>
+      {product && (
+        <Button
+          onClick={() => dispatch(addToCart({ product, quantity: 1 }))}
+          dataTestId={id ? `add-to-cart-${id}` : "add-to-cart-button"}
+          ariaLabel="Add to cart"
+          className="mt-4 w-full"
+        >
+          Add to cart
+        </Button>
+      )}
     </article>
   );
 };

@@ -48,10 +48,10 @@ export const CartItem: React.FC<CartItemProps> = ({
   return (
     <>
       <article
-        className="flex gap-3 border-b border-gray-200 px-3 py-3 last:border-b-0 dark:border-gray-700"
+        className="flex gap-3 border-b border-neutral-200 px-3 py-3 last:border-b-0 dark:border-neutral-700"
         data-testid={`cart-item-${productId}`}
       >
-        <div className="h-14 w-14 shrink-0 overflow-hidden rounded-md bg-gray-100 dark:bg-gray-800">
+        <div className="h-14 w-14 shrink-0 overflow-hidden rounded-sm bg-neutral-100 dark:bg-neutral-700">
           {image ? (
             <Image
               src={image}
@@ -62,16 +62,16 @@ export const CartItem: React.FC<CartItemProps> = ({
             />
           ) : (
             <div
-              className="flex h-full w-full items-center justify-center bg-gray-200 text-gray-400 dark:bg-gray-700"
+              className="flex h-full w-full items-center justify-center bg-neutral-200 text-neutral-400 dark:bg-neutral-600"
               aria-hidden
             />
           )}
         </div>
         <div className="min-w-0 flex-1">
-          <h3 className="truncate text-sm font-medium text-gray-900 dark:text-zinc-50">
+          <h3 className="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
             {name}
           </h3>
-          <p className="text-xs text-gray-500 dark:text-gray-400">
+          <p className="text-xs text-neutral-500 dark:text-neutral-400">
             ${fixedItemPrice} × {quantity} = ${fixedItemTotalPrice}
           </p>
           <div className="mt-2 flex flex-wrap items-center gap-2 w-full justify-end">
@@ -85,7 +85,7 @@ export const CartItem: React.FC<CartItemProps> = ({
               onChange={handleQuantityChange}
               aria-label={`Quantity for ${name}`}
               data-testid={`cart-item-quantity-${productId}`}
-              className="w-14 h-full rounded border border-gray-200 px-1.5 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
+              className="h-full w-14 rounded-sm border border-neutral-300 px-1.5 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
             />
             <Button
               onClick={() => setShowConfirm(true)}

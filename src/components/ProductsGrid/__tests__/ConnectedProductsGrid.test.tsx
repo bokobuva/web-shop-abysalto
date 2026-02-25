@@ -102,7 +102,7 @@ describe("ConnectedProductsGrid", () => {
       }),
     );
 
-    expect(mockReplace).toHaveBeenCalledWith("/?product=42");
+    expect(mockReplace).toHaveBeenCalledWith("/?product=42", { scroll: false });
   });
 
   it("shows product modal when URL has product param", () => {

@@ -19,7 +19,7 @@ Watch mode:
 npm run test:watch
 ```
 
-**34 test files, ~220 tests**
+**40 test files, ~245 tests**
 
 ---
 
@@ -404,6 +404,20 @@ npm run test:watch
 | calls onClose when Cancel clicked | Cancel |
 | uses custom confirm and cancel labels | Custom labels |
 
+### Footer (`src/components/Footer/__tests__/Footer.test.tsx`) — 9 tests
+
+| Test | Description |
+|------|-------------|
+| renders all three column headings | About Us, Customer Support, Connect With Us |
+| renders About links | Our Story, Careers |
+| renders Support links | Returns, Shipping, Help Center, Contact |
+| renders social links with aria-label | Facebook, X, Instagram, YouTube |
+| renders newsletter button with aria-label | Get in the loop CTA |
+| newsletter button has data-testid | footer-newsletter |
+| calls handler when newsletter button clicked | Button interaction |
+| renders legal links | Privacy, Terms, Accessibility |
+| renders copyright text | Web Shop. All rights reserved |
+
 ### Dropdown (`src/components/Dropdown/__tests__/Dropdown.test.tsx`) — 6 tests
 
 | Test | Description |
@@ -438,4 +452,4 @@ npm run test:watch
 
 Storybook provides component documentation and visual testing. Run with `npm run storybook` (port 6006). The `@storybook/addon-a11y` addon runs accessibility checks during development.
 
-Stories exist for: Button, AddToCartControls, ProductCard, ProductsGrid, Modal, ProductDetailsModal, Sort, Search, Filters, Controls, CartItem, CartDropdown, NavBar, LoginForm, ConfirmDialog, Dropdown, Icons.
+Stories exist for: Button, AddToCartControls, ProductCard, ProductsGrid, Modal, ProductDetailsModal, Sort, Search, Filters, Controls, CartItem, CartDropdown, NavBar, LoginForm, ConfirmDialog, Dropdown, Footer, Icons.

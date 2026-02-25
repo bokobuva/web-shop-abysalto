@@ -42,19 +42,19 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
       ref={dialogRef}
       onClick={handleBackdropClick}
       onCancel={onClose}
-      className="fixed inset-0 z-50 m-0 max-h-none max-w-none border-0 bg-transparent p-0 backdrop:bg-black/50 [&::backdrop]:bg-black/50"
+      className="fixed inset-0 z-50 m-0 max-h-none max-w-none border-0 bg-transparent p-0 backdrop:bg-black/40 [&::backdrop]:bg-black/40"
     >
       <div
         role="document"
         onClick={(e) => e.stopPropagation()}
-        className="fixed left-1/2 top-1/2 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-auto rounded-lg border border-gray-200 bg-white p-6 shadow-xl dark:border-gray-700 dark:bg-gray-900"
+        className="fixed left-1/2 top-1/2 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-auto rounded-sm border border-neutral-200 bg-white p-6 shadow-xl dark:border-neutral-700 dark:bg-neutral-800"
       >
         {title && (
-          <h2 className="mb-3 text-lg font-semibold text-gray-900 dark:text-zinc-50">
+          <h2 className="mb-3 text-lg font-semibold text-neutral-900 dark:text-neutral-100">
             {title}
           </h2>
         )}
-        <p className="mb-6 text-gray-700 dark:text-gray-300">{message}</p>
+        <p className="mb-6 text-neutral-700 dark:text-neutral-300">{message}</p>
         <div className="flex flex-wrap gap-3 justify-center">
           <Button
             onClick={handleConfirm}
