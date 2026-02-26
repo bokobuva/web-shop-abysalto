@@ -2,7 +2,6 @@ import { createSelector } from "@reduxjs/toolkit";
 
 import { paginate } from "@/lib/pagination";
 import { filterProducts } from "@/lib/filters/filterProducts";
-import { searchProducts } from "@/lib/search/searchProducts";
 import { sortProducts } from "@/lib/sort/sortProducts";
 
 import type { Product } from "@/app/shared/types";
@@ -10,12 +9,20 @@ import type { Product } from "@/app/shared/types";
 import type { RootState } from "@/store";
 
 export const selectProducts = (state: RootState) => state.products.items;
+export const selectSearchResults = (state: RootState) =>
+  state.search.searchResults;
+export const selectSearchLoading = (state: RootState) =>
+  state.search.searchLoading;
+export const selectSearchError = (state: RootState) => state.search.searchError;
 
 export const selectProductById = (
   state: RootState,
   productId: string | null,
 ): Product | null => {
   if (!productId) return null;
+  const fromSearch =
+    state.search.searchResults?.find((p) => p.id === productId) ?? null;
+  if (fromSearch) return fromSearch;
   return state.products.items?.find((p) => p.id === productId) ?? null;
 };
 export const selectCategorySlug = (state: RootState) =>
@@ -31,14 +38,29 @@ export const selectFilteredProducts = createSelector(
   filterProducts,
 );
 
-const selectSearchedProducts = createSelector(
-  [selectFilteredProducts, selectSearchQuery],
-  searchProducts,
+/**
+ * Base products for display. When search is active (searchResults !== null),
+ * category and price filters apply to search results; otherwise to the full catalog.
+ * Sort is applied downstream via selectFilteredAndSortedProducts.
+ */
+const selectProductsForDisplay = createSelector(
+  [
+    selectSearchResults,
+    selectFilteredProducts,
+    selectCategorySlug,
+    selectPriceRangeId,
+  ],
+  (searchResults, filteredProducts, categorySlug, priceRangeId) => {
+    if (searchResults !== null) {
+      return filterProducts(searchResults, categorySlug, priceRangeId);
+    }
+    return filteredProducts;
+  },
 );
 
 /** Filtered products further sorted by sort option (via sortProducts). */
 export const selectFilteredAndSortedProducts = createSelector(
-  [selectSearchedProducts, selectSortOptionId],
+  [selectProductsForDisplay, selectSortOptionId],
   sortProducts,
 );
 
@@ -74,6 +96,18 @@ export const selectShowPagination = createSelector(
 export const selectProductsLoading = (state: RootState) =>
   state.products.isLoading;
 export const selectProductsError = (state: RootState) => state.products.error;
+
+/** Loading when fetching catalog or search. */
+export const selectProductsOrSearchLoading = createSelector(
+  [selectProductsLoading, selectSearchLoading],
+  (productsLoading, searchLoading) => productsLoading || searchLoading,
+);
+
+/** Error from catalog or search fetch. */
+export const selectProductsOrSearchError = createSelector(
+  [selectProductsError, selectSearchError],
+  (productsError, searchError) => productsError ?? searchError ?? null,
+);
 export const selectCategories = (state: RootState) => state.categories.items;
 export const selectCategoriesLoading = (state: RootState) =>
   state.categories.isLoading;

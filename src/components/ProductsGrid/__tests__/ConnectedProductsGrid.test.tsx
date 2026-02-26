@@ -64,7 +64,12 @@ const createStore = (products: Product[]) =>
       },
       filters: { categorySlug: null, priceRangeId: null },
       sort: { sortOptionId: "default" as SortOptionId },
-      search: { searchQuery: "" },
+      search: {
+        searchQuery: "",
+        searchResults: null,
+        searchLoading: false,
+        searchError: null,
+      },
     },
   });
 
@@ -86,7 +91,7 @@ describe("ConnectedProductsGrid", () => {
     mockSearchParams = new URLSearchParams();
   });
 
-  it("opens product modal when Details is clicked", async () => {
+  it("opens product modal when product card is clicked", async () => {
     const products = [
       createProduct({
         id: "42",

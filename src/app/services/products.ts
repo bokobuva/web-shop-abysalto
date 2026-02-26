@@ -42,3 +42,26 @@ export async function fetchProducts(): Promise<Product[]> {
   const data: DummyJsonResponse = await response.json();
   return data.products.map(mapToProduct);
 }
+
+/**
+ * Fetches products from DummyJSON search API, maps to Product type, and filters
+ * to only products whose title contains the query (case-insensitive).
+ * Throws when the response is not ok.
+ */
+export async function fetchSearchProducts(query: string): Promise<Product[]> {
+  const url = `https://dummyjson.com/products/search?q=${encodeURIComponent(query)}`;
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch search products: ${response.statusText}`);
+  }
+
+  const data: DummyJsonResponse = await response.json();
+  const products = data.products.map(mapToProduct);
+  const trimmed = query.trim().toLowerCase();
+  const filtered =
+    trimmed === ""
+      ? products
+      : products.filter((p) => p.name.toLowerCase().includes(trimmed));
+  return filtered;
+}

@@ -5,8 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 
 import {
   selectPaginatedProducts,
-  selectProductsError,
-  selectProductsLoading,
+  selectProductsOrSearchError,
+  selectProductsOrSearchLoading,
   selectShowPagination,
   selectCurrentPage,
   selectTotalPages,
@@ -18,6 +18,7 @@ import {
 import { setCurrentPage } from "@/store";
 
 import { useCloseProductModalWhenNotFound } from "@/hooks/useCloseProductModalWhenNotFound";
+import { useDebouncedSearchProducts } from "@/hooks/useDebouncedSearchProducts";
 import { useProductModal } from "@/hooks/useProductModal";
 import { useResetPaginationOnFilterChange } from "@/hooks/useResetPaginationOnFilterChange";
 
@@ -28,11 +29,12 @@ import { ProductsGrid } from "@/components/ProductsGrid";
 
 function ConnectedProductsGridInner() {
   const dispatch = useDispatch();
+  useDebouncedSearchProducts();
   const { selectedProduct, selectedProductId, openProduct, closeProduct } =
     useProductModal();
   const products = useSelector(selectPaginatedProducts);
-  const isLoading = useSelector(selectProductsLoading);
-  const error = useSelector(selectProductsError);
+  const isLoading = useSelector(selectProductsOrSearchLoading);
+  const error = useSelector(selectProductsOrSearchError);
   const showPagination = useSelector(selectShowPagination);
   const currentPage = useSelector(selectCurrentPage);
   const totalPages = useSelector(selectTotalPages);

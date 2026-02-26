@@ -8,6 +8,7 @@ import {
   setSearchQuery,
   setCurrentPage,
 } from "@/store";
+import { setSearchResults } from "@/store/searchSlice";
 import type { RootState } from "@/store";
 import {
   selectFilteredProducts,
@@ -48,6 +49,7 @@ describe("selectors", () => {
     store.dispatch(setPriceRange(null));
     store.dispatch(setSortOption("default"));
     store.dispatch(setSearchQuery(""));
+    store.dispatch(setSearchResults(null));
   });
 
   describe("selectFilteredProducts", () => {
@@ -61,7 +63,12 @@ describe("selectors", () => {
         categories: { items: undefined, isLoading: false, error: null },
         filters: { categorySlug: null, priceRangeId: null },
         sort: { sortOptionId: "default" as const },
-        search: { searchQuery: "" },
+        search: {
+          searchQuery: "",
+          searchResults: null,
+          searchLoading: false,
+          searchError: null,
+        },
         pagination: { currentPage: 1, pageSize: 20 },
       } as RootState;
       expect(
@@ -116,7 +123,12 @@ describe("selectors", () => {
         categories: { items: undefined, isLoading: false, error: null },
         filters: { categorySlug: null, priceRangeId: null },
         sort: { sortOptionId: "default" as const },
-        search: { searchQuery: "" },
+        search: {
+          searchQuery: "",
+          searchResults: null,
+          searchLoading: false,
+          searchError: null,
+        },
         pagination: { currentPage: 1, pageSize: 20 },
       } as RootState;
       expect(selectCategories(stateWithUndefinedCategories)).toBeUndefined();
@@ -155,7 +167,12 @@ describe("selectors", () => {
         categories: { items: undefined, isLoading: false, error: null },
         filters: { categorySlug: null, priceRangeId: null },
         sort: { sortOptionId: "default" as const },
-        search: { searchQuery: "" },
+        search: {
+          searchQuery: "",
+          searchResults: null,
+          searchLoading: false,
+          searchError: null,
+        },
         pagination: { currentPage: 1, pageSize: 20 },
       } as RootState;
       expect(
@@ -204,13 +221,71 @@ describe("selectors", () => {
       expect(result!.map((p) => p.name)).toEqual(["Product B", "Product A"]);
     });
 
-    it("filters by search query when set", () => {
-      store.dispatch(setSearchQuery("Product A"));
+    it("uses search results when searchResults is set", () => {
+      const searchResults = [mockProducts[0]!];
+      store.dispatch(setSearchResults(searchResults));
       const state = store.getState();
       const result = selectFilteredAndSortedProducts(state);
       expect(result).toBeDefined();
       expect(result).toHaveLength(1);
       expect(result![0].name).toBe("Product A");
+    });
+
+    it("applies category filter to search results when search active", () => {
+      const searchResultsFromApi = [
+        mockProducts[0]!,
+        { ...mockProducts[1]!, category: "groceries", name: "Beef Steak" },
+      ];
+      store.dispatch(setSearchResults(searchResultsFromApi));
+      store.dispatch(setCategory("groceries"));
+      const state = store.getState();
+      const result = selectFilteredAndSortedProducts(state);
+      expect(result).toBeDefined();
+      expect(result).toHaveLength(1);
+      expect(result![0].name).toBe("Beef Steak");
+      expect(result![0].category).toBe("groceries");
+    });
+
+    it("applies category and price filter to search results when search active", () => {
+      const searchResultsFromApi = [
+        { ...mockProducts[0]!, category: "groceries", price: 25 },
+        { ...mockProducts[1]!, category: "groceries", price: 75 },
+      ];
+      store.dispatch(setSearchResults(searchResultsFromApi));
+      store.dispatch(setCategory("groceries"));
+      store.dispatch(setPriceRange("50-100"));
+      const state = store.getState();
+      const result = selectFilteredAndSortedProducts(state);
+      expect(result).toBeDefined();
+      expect(result).toHaveLength(1);
+      expect(result![0].price).toBe(75);
+      expect(result![0].category).toBe("groceries");
+    });
+
+    it("applies sort to search results when search and category filter active", () => {
+      const searchResultsFromApi = [
+        {
+          ...mockProducts[0]!,
+          category: "groceries",
+          price: 25,
+          name: "Zebra",
+        },
+        {
+          ...mockProducts[1]!,
+          category: "groceries",
+          price: 75,
+          name: "Apple",
+        },
+      ];
+      store.dispatch(setSearchResults(searchResultsFromApi));
+      store.dispatch(setCategory("groceries"));
+      store.dispatch(setSortOption("name-asc"));
+      const state = store.getState();
+      const result = selectFilteredAndSortedProducts(state);
+      expect(result).toBeDefined();
+      expect(result).toHaveLength(2);
+      expect(result![0].name).toBe("Apple");
+      expect(result![1].name).toBe("Zebra");
     });
 
     it("filters and sorts together", () => {
@@ -307,7 +382,12 @@ describe("selectors", () => {
         categories: { items: undefined, isLoading: false, error: null },
         filters: { categorySlug: null, priceRangeId: null },
         sort: { sortOptionId: "default" as const },
-        search: { searchQuery: "" },
+        search: {
+          searchQuery: "",
+          searchResults: null,
+          searchLoading: false,
+          searchError: null,
+        },
         pagination: { currentPage: 1, pageSize: 20 },
       } as RootState;
       expect(selectProductById(stateWithUndefinedProducts, "1")).toBeNull();
