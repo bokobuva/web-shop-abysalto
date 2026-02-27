@@ -19,7 +19,7 @@ import productsReducer from "@/store/productsSlice";
 import categoriesReducer from "@/store/categoriesSlice";
 import filtersReducer from "@/store/filtersSlice";
 import sortReducer from "@/store/sortSlice";
-import searchReducer from "@/store/searchSlice";
+import searchReducer, { initialSearchState } from "@/store/searchSlice";
 import paginationReducer from "@/store/paginationSlice";
 import { cartReducer } from "@/store/cartSlice";
 
@@ -64,12 +64,7 @@ const createStore = (products: Product[]) =>
       },
       filters: { categorySlug: null, priceRangeId: null },
       sort: { sortOptionId: "default" as SortOptionId },
-      search: {
-        searchQuery: "",
-        searchResults: null,
-        searchLoading: false,
-        searchError: null,
-      },
+      search: initialSearchState,
     },
   });
 

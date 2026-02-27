@@ -9,7 +9,7 @@ import productsReducer from "@/store/productsSlice";
 import categoriesReducer from "@/store/categoriesSlice";
 import filtersReducer from "@/store/filtersSlice";
 import sortReducer from "@/store/sortSlice";
-import searchReducer from "@/store/searchSlice";
+import searchReducer, { initialSearchState } from "@/store/searchSlice";
 
 import { Controls } from "@/components/Controls";
 
@@ -43,7 +43,7 @@ const createStore = () =>
         priceRangeId: null,
       },
       sort: { sortOptionId: "default" as SortOptionId },
-      search: { searchQuery: "" },
+      search: initialSearchState,
     },
   });
 
@@ -101,7 +101,7 @@ describe("Controls", () => {
         products: { items: [], isLoading: false, error: null },
         filters: { categorySlug: null, priceRangeId: null },
         sort: { sortOptionId: "default" as SortOptionId },
-        search: { searchQuery: "" },
+        search: initialSearchState,
       },
     });
     render(

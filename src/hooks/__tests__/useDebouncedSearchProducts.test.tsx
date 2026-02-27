@@ -4,7 +4,7 @@ import { configureStore } from "@reduxjs/toolkit";
 
 import * as productsService from "@/app/services/products";
 
-import searchReducer from "@/store/searchSlice";
+import searchReducer, { initialSearchState } from "@/store/searchSlice";
 import productsReducer from "@/store/productsSlice";
 import categoriesReducer from "@/store/categoriesSlice";
 import filtersReducer from "@/store/filtersSlice";
@@ -32,12 +32,7 @@ const createStore = (searchQuery = "") =>
       pagination: paginationReducer,
     },
     preloadedState: {
-      search: {
-        searchQuery,
-        searchResults: null,
-        searchLoading: false,
-        searchError: null,
-      },
+      search: { ...initialSearchState, searchQuery },
     },
   });
 

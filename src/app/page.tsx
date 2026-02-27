@@ -1,12 +1,12 @@
 "use client";
 
-import { Footer } from "@/components/Footer";
-import { HeroBanner } from "@/components/HeroBanner";
 import { NavBar } from "@/components/NavBar";
-import { ValuePropositionBar } from "@/components/ValuePropositionBar";
 import { Controls } from "@/components/Controls";
 import { ConnectedProductsGrid } from "@/components/ProductsGrid/ConnectedProductsGrid";
 import { useSyncProductsToRedux } from "@/hooks/useSyncProductsToRedux";
+import { Footer } from "@/components/Footer";
+import { HeroBanner } from "@/components/HeroBanner";
+import { ValuePropositionBar } from "@/components/ValuePropositionBar";
 
 export default function Home() {
   useSyncProductsToRedux();

@@ -9,11 +9,11 @@ import productsReducer from "@/store/productsSlice";
 import categoriesReducer from "@/store/categoriesSlice";
 import filtersReducer from "@/store/filtersSlice";
 import sortReducer from "@/store/sortSlice";
-import searchReducer from "@/store/searchSlice";
+import searchReducer, { initialSearchState } from "@/store/searchSlice";
 
 import { Search } from "@/components/Search";
 
-const createStore = (preloadedState?: { search?: { searchQuery: string } }) =>
+const createStore = (preloadedState?: { search?: typeof initialSearchState }) =>
   configureStore({
     reducer: {
       products: productsReducer,
@@ -24,7 +24,7 @@ const createStore = (preloadedState?: { search?: { searchQuery: string } }) =>
     },
     preloadedState: {
       sort: { sortOptionId: "default" as SortOptionId },
-      search: preloadedState?.search ?? { searchQuery: "" },
+      search: preloadedState?.search ?? initialSearchState,
     },
   });
 
@@ -52,7 +52,11 @@ export const Default: Story = {};
 export const WithSearchQuery: Story = {
   decorators: [
     (Story) => (
-      <Provider store={createStore({ search: { searchQuery: "mascara" } })}>
+      <Provider
+        store={createStore({
+          search: { ...initialSearchState, searchQuery: "mascara" },
+        })}
+      >
         <Story />
       </Provider>
     ),

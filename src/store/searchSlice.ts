@@ -9,7 +9,7 @@ type SearchState = {
   searchError: string | null;
 };
 
-const initialState: SearchState = {
+export const initialSearchState: SearchState = {
   searchQuery: "",
   searchResults: null,
   searchLoading: false,
@@ -18,7 +18,7 @@ const initialState: SearchState = {
 
 export const searchSlice = createSlice({
   name: "search",
-  initialState,
+  initialState: initialSearchState,
   reducers: {
     setSearchQuery: (state, action: { payload: string }) => {
       state.searchQuery = action.payload;

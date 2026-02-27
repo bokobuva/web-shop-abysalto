@@ -11,7 +11,7 @@ import productsReducer from "@/store/productsSlice";
 import categoriesReducer from "@/store/categoriesSlice";
 import filtersReducer from "@/store/filtersSlice";
 import sortReducer from "@/store/sortSlice";
-import searchReducer from "@/store/searchSlice";
+import searchReducer, { initialSearchState } from "@/store/searchSlice";
 import paginationReducer from "@/store/paginationSlice";
 import { authReducer } from "@/store/authSlice";
 
@@ -46,7 +46,7 @@ const createStore = () =>
       categories: { items: [], isLoading: false, error: null },
       filters: { categorySlug: null, priceRangeId: null },
       sort: { sortOptionId: "default" as SortOptionId },
-      search: { searchQuery: "" },
+      search: initialSearchState,
       pagination: { currentPage: 1, pageSize: 20 },
       auth: {
         user: null,

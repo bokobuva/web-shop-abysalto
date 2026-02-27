@@ -10,11 +10,11 @@ import productsReducer from "@/store/productsSlice";
 import categoriesReducer from "@/store/categoriesSlice";
 import filtersReducer from "@/store/filtersSlice";
 import sortReducer from "@/store/sortSlice";
-import searchReducer from "@/store/searchSlice";
+import searchReducer, { initialSearchState } from "@/store/searchSlice";
 
 import { Search } from "@/components/Search";
 
-const createStore = (preloadedState?: { search?: { searchQuery: string } }) =>
+const createStore = (preloadedState?: { search?: typeof initialSearchState }) =>
   configureStore({
     reducer: {
       products: productsReducer,
@@ -25,12 +25,12 @@ const createStore = (preloadedState?: { search?: { searchQuery: string } }) =>
     },
     preloadedState: {
       sort: { sortOptionId: "default" as SortOptionId },
-      search: preloadedState?.search ?? { searchQuery: "" },
+      search: preloadedState?.search ?? initialSearchState,
     },
   });
 
 const renderWithRedux = (preloadedState?: {
-  search?: { searchQuery: string };
+  search?: typeof initialSearchState;
 }) => {
   const store = createStore(preloadedState);
   return {
@@ -59,7 +59,9 @@ describe("Search", () => {
   });
 
   it("search input value reflects searchQuery", () => {
-    renderWithRedux({ search: { searchQuery: "apple" } });
+    renderWithRedux({
+      search: { ...initialSearchState, searchQuery: "apple" },
+    });
     expect(screen.getByPlaceholderText(/search products by name/i)).toHaveValue(
       "apple",
     );

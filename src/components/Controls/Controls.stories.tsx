@@ -9,7 +9,7 @@ import productsReducer from "@/store/productsSlice";
 import categoriesReducer from "@/store/categoriesSlice";
 import filtersReducer from "@/store/filtersSlice";
 import sortReducer from "@/store/sortSlice";
-import searchReducer from "@/store/searchSlice";
+import searchReducer, { initialSearchState } from "@/store/searchSlice";
 
 import { Controls } from "@/components/Controls";
 
@@ -23,7 +23,7 @@ const mockCategories = [
 const createStore = (preloadedState?: {
   filters?: { categorySlug: string | null; priceRangeId: PriceRangeId | null };
   sort?: { sortOptionId: SortOptionId };
-  search?: { searchQuery: string };
+  search?: typeof initialSearchState;
   categories?: {
     items: typeof mockCategories | undefined;
     isLoading: boolean;
@@ -54,7 +54,7 @@ const createStore = (preloadedState?: {
         priceRangeId: null,
       },
       sort: preloadedState?.sort ?? { sortOptionId: "default" as SortOptionId },
-      search: preloadedState?.search ?? { searchQuery: "" },
+      search: preloadedState?.search ?? initialSearchState,
     },
   });
 
