@@ -7,14 +7,13 @@ import { configureStore } from "@reduxjs/toolkit";
 import type { AuthUser } from "@/app/shared/types";
 
 import * as authApi from "@/app/services/auth";
-import { getTokens } from "@/lib/auth/tokenStorage";
 
 import { authReducer } from "@/store/authSlice";
 
+import { AuthProvider } from "@/app/providers/AuthProvider";
 import { LoginForm } from "../LoginForm";
 
 const mockAuthApi = authApi as jest.Mocked<typeof authApi>;
-const mockGetTokens = getTokens as jest.MockedFunction<typeof getTokens>;
 
 let useRealAuth = false;
 jest.mock("@/hooks/useAuth", () => {
@@ -25,7 +24,6 @@ jest.mock("@/hooks/useAuth", () => {
   };
 });
 jest.mock("@/app/services/auth");
-jest.mock("@/lib/auth/tokenStorage");
 
 const createStore = (
   authState?: Partial<{
@@ -58,7 +56,9 @@ const renderWithRedux = (
   return {
     ...render(
       <Provider store={store}>
-        <LoginForm {...props} />
+        <AuthProvider>
+          <LoginForm {...props} />
+        </AuthProvider>
       </Provider>,
     ),
     store,
@@ -142,12 +142,17 @@ describe("LoginForm", () => {
 
   it("shows error when login fails on submit", async () => {
     useRealAuth = true;
-    mockGetTokens.mockReturnValue(null);
+    mockAuthApi.getMe.mockRejectedValue(new Error("Unauthorized"));
+    mockAuthApi.refreshToken.mockRejectedValue(new Error("Unauthorized"));
     mockAuthApi.login.mockRejectedValue(new Error("Invalid credentials"));
 
     const store = createStore({ isInitialized: false });
     const user = userEvent.setup();
     renderWithRedux({ onClose: jest.fn() }, store);
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
+    });
 
     await user.type(screen.getByLabelText(/username/i), "wrong");
     await user.type(screen.getByLabelText(/password/i), "wrong");

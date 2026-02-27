@@ -20,6 +20,7 @@ Next.js provides routing, SSR-capable rendering, and build tooling out of the bo
 ```
 src/
 ├── app/                    # Next.js App Router
+│   ├── api/auth/          # Auth API routes (login, me, refresh, logout)
 │   ├── layout.tsx         # Root layout, providers
 │   ├── page.tsx           # Home page
 │   ├── providers/         # Auth, Cart, Query, Redux
@@ -84,40 +85,43 @@ API calls run in the browser and target DummyJSON directly.
 |---------|---------|
 | `products` | Fetch all products (mapped to our Product type) |
 | `categories` | Fetch category list |
-| `auth` | Login, getMe, refreshToken, logout (token storage in sessionStorage) |
+| `auth` | Login, getMe, refreshToken, logout (httpOnly cookies via API routes) |
 
 ## Authentication
 
-Authentication uses DummyJSON's auth endpoints. Tokens are stored in **sessionStorage** because we call DummyJSON from the browser; we cannot set httpOnly cookies for our domain without a backend proxy.
+Authentication uses **httpOnly cookies** for token storage. The client calls Next.js API routes (`/api/auth/login`, `/api/auth/me`, `/api/auth/refresh`, `/api/auth/logout`), which proxy requests to DummyJSON. On successful login or refresh, the server sets `access_token` and `refresh_token` as httpOnly cookies. The client never reads or writes tokens; cookies are sent automatically with `credentials: 'include'`.
+
+**Cookie options:** `httpOnly: true`, `secure` (production only), `sameSite: 'lax'`, `path: '/'`, `maxAge` (10 min for access, 7 days for refresh).
 
 ### Login flow
 
-The user submits credentials from the login form. `useAuth` calls `auth.login()`, which posts to DummyJSON, receives access and refresh tokens, stores them in sessionStorage, and dispatches the user to Redux. On success, `login()` returns `true`; on failure it returns `false` and sets the error in Redux.
+The user submits credentials from the login form. `useAuth` calls `auth.login()`, which POSTs to `/api/auth/login`. The API route forwards to DummyJSON, and on success sets httpOnly cookies and returns user data. The client dispatches the user to Redux.
 
 ```mermaid
 flowchart LR
-    A[Browser] -->|username, password| B[auth.login]
+    A[Browser] -->|POST /api/auth/login credentials:include| B[Next.js API]
     B -->|POST /auth/login| C[DummyJSON]
-    C --> B
-    B -->|setTokens| D[sessionStorage]
-    B -->|setUser| E[Redux]
+    C -->|tokens| B
+    B -->|Set-Cookie httpOnly| A
+    B -->|user JSON| A
+    A -->|setUser| D[Redux]
 ```
 
 ### Token refresh flow
 
-`useAuth` schedules a refresh before token expiry using JWT payload decoding. On tab visibility change, it checks if the token is near expiry and triggers a refresh if needed. If refresh fails, tokens are cleared and the user is logged out.
+`useAuth` schedules a refresh before token expiry using `expiresAt` returned from the login/me/refresh API. On tab visibility change, it may trigger a refresh. All requests use `credentials: 'include'` so cookies are sent automatically.
 
 ```mermaid
 flowchart TD
     A[useAuth] -->|schedule| B[setTimeout before expiry]
-    B --> C[refreshToken]
-    C -->|success| D[schedule next]
-    C -->|fail| E[logout, clear tokens]
+    B --> C[POST /api/auth/refresh]
+    C -->|success| D[new cookies set, schedule next]
+    C -->|fail| E[logout, cookies cleared]
 ```
 
 ### Logout flow
 
-`useAuth.logout()` clears sessionStorage, dispatches `setUser(null)` and `setAuthError(null)`, and clears the refresh timeout.
+`useAuth.logout()` calls `POST /api/auth/logout`, which clears the auth cookies. The client then dispatches `setUser(null)` and `setAuthError(null)`.
 
 ## Product Listing
 
@@ -174,9 +178,7 @@ This keeps lint and test errors from reaching CI and enforces shared standards.
 
 ### Token storage
 
-Tokens are stored in **sessionStorage** because we call DummyJSON directly from the browser. httpOnly cookies would require a backend proxy. sessionStorage clears when the tab closes, reducing exposure compared to localStorage.
-
-For production, use a **backend proxy** and **httpOnly cookies**.
+Tokens are stored in **httpOnly cookies** set by our API routes. The client cannot read or modify them, which mitigates XSS token theft. Cookies use `secure` in production, `sameSite: 'lax'`, and `path: '/'`. Access token: 10 min maxAge; refresh token: 7 days.
 
 ### XSS prevention
 
@@ -185,7 +187,6 @@ For production, use a **backend proxy** and **httpOnly cookies**.
 
 ### Recommendations
 
-- Backend proxy for httpOnly cookies
 - CSP, X-Frame-Options, HSTS in production
 - Rate limiting and CAPTCHA on login
 

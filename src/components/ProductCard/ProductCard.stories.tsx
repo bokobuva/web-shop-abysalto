@@ -120,3 +120,34 @@ export const WithAddToCart: Story = {
     product: mockProduct,
   },
 };
+
+export const InCart: Story = {
+  args: {
+    ...WithAddToCart.args,
+    id: mockProduct.id,
+  },
+  decorators: [
+    (Story) => (
+      <Provider
+        store={configureStore({
+          reducer: { cart: cartReducer },
+          preloadedState: {
+            cart: {
+              items: [
+                {
+                  productId: mockProduct.id,
+                  quantity: 2,
+                  name: mockProduct.name,
+                  price: mockProduct.price,
+                  image: mockProduct.image,
+                },
+              ],
+            },
+          },
+        })}
+      >
+        <Story />
+      </Provider>
+    ),
+  ],
+};

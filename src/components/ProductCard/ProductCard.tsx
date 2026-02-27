@@ -1,13 +1,15 @@
 "use client";
 
 import Image from "next/image";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import type { Product } from "@/app/shared/types";
 
 import { addToCart } from "@/store";
+import { selectCartItems } from "@/store/selectors";
 
 import { Button } from "@/components/Button";
+import { CartIcon } from "@/components/icons";
 
 type ProductCardProps = {
   title: string;
@@ -43,6 +45,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   product,
 }) => {
   const dispatch = useDispatch();
+  const cartItems = useSelector(selectCartItems);
+  const isInCart =
+    product !== undefined && cartItems.some((i) => i.productId === product.id);
   const truncatedDescription = truncateDescription(
     description,
     maxDescriptionLength,
@@ -62,10 +67,22 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
   return (
     <article
-      className="product-card flex flex-col justify-between rounded-sm border border-neutral-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md dark:border-neutral-700 dark:bg-neutral-800"
+      className="product-card relative flex flex-col justify-between rounded-sm border border-neutral-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md dark:border-neutral-700 dark:bg-neutral-800"
       data-testid="product-card"
       aria-labelledby={titleId}
     >
+      {isInCart && (
+        <span
+          className="absolute top-3 right-3"
+          aria-label="In cart"
+          data-testid="product-card-in-cart"
+        >
+          <CartIcon
+            size={20}
+            className="text-emerald-600 dark:text-emerald-400"
+          />
+        </span>
+      )}
       <div
         role="button"
         tabIndex={0}

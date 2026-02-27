@@ -29,14 +29,23 @@ npm run test:watch
 
 | Test | Description |
 |------|-------------|
-| returns user and tokens on success | Login stores tokens and returns user |
+| returns user on success and uses credentials | Login calls /api/auth/login with credentials: include |
 | throws with API error message on failure | Error message from API on invalid credentials |
 | throws generic message when API returns non-JSON error | Fallback for non-JSON error body |
-| returns user when token is valid | getMe with valid token |
+| returns user with credentials | getMe calls /api/auth/me with credentials: include |
 | throws when response is not ok | getMe error handling |
-| returns new tokens and updates storage | refreshToken success |
+| returns expiresAt with credentials | refreshToken calls /api/auth/refresh with credentials: include |
 | throws when refresh fails | refreshToken failure |
-| clears tokens | logout clears storage |
+| calls logout API with credentials | logout calls /api/auth/logout |
+
+### Auth API routes (`src/app/api/auth/*/__tests__/route.test.ts`)
+
+| Route | Tests |
+|-------|-------|
+| POST /api/auth/login | Returns user and sets cookies on success; 400 when credentials missing; error status when DummyJSON fails |
+| GET /api/auth/me | 401 when no cookie; returns user when token valid; 401 when DummyJSON rejects |
+| POST /api/auth/refresh | 401 and clears cookies when no refresh token; returns expiresAt and sets new cookies on success; 401 on DummyJSON failure |
+| POST /api/auth/logout | Returns 200 and clears cookies |
 
 ### products (`src/app/services/__tests__/products.test.ts`) — 6 tests
 
@@ -115,25 +124,13 @@ npm run test:watch
 | returns empty array when page is beyond range | Out-of-range page |
 | handles single page | Single page |
 
-### tokenStorage (`src/lib/auth/__tests__/tokenStorage.test.ts`) — 5 tests
+### serverJwt (`src/lib/auth/__tests__/serverJwt.test.ts`) — 3 tests
 
 | Test | Description |
 |------|-------------|
-| returns null when no tokens stored | No tokens |
-| returns tokens when both are stored | Both tokens present |
-| returns null when only access token is stored | Incomplete pair |
-| stores both tokens | setTokens |
-| removes tokens | clearTokens |
-
-### jwtUtils (`src/lib/auth/__tests__/jwtUtils.test.ts`) — 5 tests
-
-| Test | Description |
-|------|-------------|
-| returns exp from valid JWT payload | Valid token |
+| returns exp from valid JWT | Valid token decode |
 | returns null for invalid token format | Invalid format |
-| returns null for malformed payload | Malformed base64 |
-| returns null when exp is missing | Missing exp |
-| returns null when exp is not a number | Invalid exp type |
+| returns null when exp is missing | Missing exp claim |
 
 ### cartStorage (`src/lib/cart/__tests__/cartStorage.test.ts`) — 5 tests
 

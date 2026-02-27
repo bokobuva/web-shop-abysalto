@@ -1,15 +1,10 @@
 import * as authApi from "@/app/services/auth";
-import * as tokenStorage from "@/lib/auth/tokenStorage";
 
 const mockFetch = jest.fn();
-const mockSetTokens = jest.spyOn(tokenStorage, "setTokens");
-const mockClearTokens = jest.spyOn(tokenStorage, "clearTokens");
 
 beforeEach(() => {
   global.fetch = mockFetch;
   mockFetch.mockClear();
-  mockSetTokens.mockClear();
-  mockClearTokens.mockClear();
 });
 
 const mockUser = {
@@ -22,13 +17,12 @@ const mockUser = {
 };
 
 describe("login", () => {
-  it("returns user and tokens on success", async () => {
+  it("returns user on success and uses credentials", async () => {
     mockFetch.mockResolvedValueOnce({
       ok: true,
       json: async () => ({
         ...mockUser,
-        accessToken: "access-123",
-        refreshToken: "refresh-456",
+        expiresAt: 1234567890,
       }),
     });
 
@@ -37,16 +31,13 @@ describe("login", () => {
       password: "emilyspass",
     });
 
-    expect(result).toEqual({
-      ...mockUser,
-      accessToken: "access-123",
-      refreshToken: "refresh-456",
-    });
-    expect(mockSetTokens).toHaveBeenCalledWith("access-123", "refresh-456");
+    expect(result).toMatchObject(mockUser);
     expect(mockFetch).toHaveBeenCalledWith(
-      "https://dummyjson.com/auth/login",
+      "/api/auth/login",
       expect.objectContaining({
         method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
         body: expect.stringContaining("emilys"),
       }),
     );
@@ -61,7 +52,6 @@ describe("login", () => {
     await expect(
       authApi.login({ username: "wrong", password: "wrong" }),
     ).rejects.toThrow("Invalid credentials");
-    expect(mockSetTokens).not.toHaveBeenCalled();
   });
 
   it("throws generic message when API returns non-JSON error", async () => {
@@ -80,19 +70,20 @@ describe("login", () => {
 });
 
 describe("getMe", () => {
-  it("returns user when token is valid", async () => {
+  it("returns user with credentials", async () => {
     mockFetch.mockResolvedValueOnce({
       ok: true,
-      json: async () => mockUser,
+      json: async () => ({ ...mockUser, expiresAt: 1234567890 }),
     });
 
-    const result = await authApi.getMe("access-123");
+    const result = await authApi.getMe();
 
-    expect(result).toEqual(mockUser);
+    expect(result).toMatchObject(mockUser);
     expect(mockFetch).toHaveBeenCalledWith(
-      "https://dummyjson.com/auth/me",
+      "/api/auth/me",
       expect.objectContaining({
-        headers: { Authorization: "Bearer access-123" },
+        method: "GET",
+        credentials: "include",
       }),
     );
   });
@@ -103,29 +94,29 @@ describe("getMe", () => {
       statusText: "Unauthorized",
     });
 
-    await expect(authApi.getMe("invalid")).rejects.toThrow(
+    await expect(authApi.getMe()).rejects.toThrow(
       "Failed to get user: Unauthorized",
     );
   });
 });
 
 describe("refreshToken", () => {
-  it("returns new tokens and updates storage", async () => {
+  it("returns expiresAt with credentials", async () => {
     mockFetch.mockResolvedValueOnce({
       ok: true,
-      json: async () => ({
-        accessToken: "new-access",
-        refreshToken: "new-refresh",
+      json: async () => ({ expiresAt: 1234567890 }),
+    });
+
+    const result = await authApi.refreshToken();
+
+    expect(result).toEqual({ expiresAt: 1234567890 });
+    expect(mockFetch).toHaveBeenCalledWith(
+      "/api/auth/refresh",
+      expect.objectContaining({
+        method: "POST",
+        credentials: "include",
       }),
-    });
-
-    const result = await authApi.refreshToken("refresh-456");
-
-    expect(result).toEqual({
-      accessToken: "new-access",
-      refreshToken: "new-refresh",
-    });
-    expect(mockSetTokens).toHaveBeenCalledWith("new-access", "new-refresh");
+    );
   });
 
   it("throws when refresh fails", async () => {
@@ -134,15 +125,24 @@ describe("refreshToken", () => {
       statusText: "Forbidden",
     });
 
-    await expect(authApi.refreshToken("invalid")).rejects.toThrow(
+    await expect(authApi.refreshToken()).rejects.toThrow(
       "Token refresh failed: Forbidden",
     );
   });
 });
 
 describe("logout", () => {
-  it("clears tokens", () => {
-    authApi.logout();
-    expect(mockClearTokens).toHaveBeenCalled();
+  it("calls logout API with credentials", async () => {
+    mockFetch.mockResolvedValueOnce({ ok: true });
+
+    await authApi.logout();
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      "/api/auth/logout",
+      expect.objectContaining({
+        method: "POST",
+        credentials: "include",
+      }),
+    );
   });
 });

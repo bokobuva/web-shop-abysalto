@@ -6,7 +6,6 @@ import { configureStore } from "@reduxjs/toolkit";
 import type { SortOptionId } from "@/app/shared/types";
 
 import * as authApi from "@/app/services/auth";
-import { getTokens } from "@/lib/auth/tokenStorage";
 
 import productsReducer from "@/store/productsSlice";
 import categoriesReducer from "@/store/categoriesSlice";
@@ -16,13 +15,12 @@ import searchReducer from "@/store/searchSlice";
 import paginationReducer from "@/store/paginationSlice";
 import { authReducer } from "@/store/authSlice";
 
+import { AuthProvider } from "@/app/providers/AuthProvider";
 import { useAuth } from "../useAuth";
 
 jest.mock("@/app/services/auth");
-jest.mock("@/lib/auth/tokenStorage");
 
 const mockAuthApi = authApi as jest.Mocked<typeof authApi>;
-const mockGetTokens = getTokens as jest.MockedFunction<typeof getTokens>;
 
 const mockUser = {
   id: 1,
@@ -60,7 +58,9 @@ const createStore = () =>
   });
 
 const wrapper = ({ children }: { children: React.ReactNode }) => (
-  <Provider store={createStore()}>{children}</Provider>
+  <Provider store={createStore()}>
+    <AuthProvider>{children}</AuthProvider>
+  </Provider>
 );
 
 describe("useAuth", () => {
@@ -68,8 +68,9 @@ describe("useAuth", () => {
     jest.clearAllMocks();
   });
 
-  it("initializes as anonymous when no tokens", async () => {
-    mockGetTokens.mockReturnValue(null);
+  it("initializes as anonymous when getMe fails and refresh fails", async () => {
+    mockAuthApi.getMe.mockRejectedValue(new Error("Unauthorized"));
+    mockAuthApi.refreshToken.mockRejectedValue(new Error("Unauthorized"));
 
     const { result } = renderHook(() => useAuth(), { wrapper });
 
@@ -78,15 +79,14 @@ describe("useAuth", () => {
     });
 
     expect(result.current.user).toBeNull();
-    expect(mockAuthApi.getMe).not.toHaveBeenCalled();
+    expect(mockAuthApi.getMe).toHaveBeenCalled();
   });
 
-  it("loads user when tokens exist", async () => {
-    mockGetTokens.mockReturnValue({
-      accessToken: "access-123",
-      refreshToken: "refresh-456",
+  it("loads user when getMe succeeds", async () => {
+    mockAuthApi.getMe.mockResolvedValue({
+      ...mockUser,
+      expiresAt: Math.floor(Date.now() / 1000) + 3600,
     });
-    mockAuthApi.getMe.mockResolvedValue(mockUser);
 
     const { result } = renderHook(() => useAuth(), { wrapper });
 
@@ -94,16 +94,15 @@ describe("useAuth", () => {
       expect(result.current.isInitialized).toBe(true);
     });
 
-    expect(result.current.user).toEqual(mockUser);
-    expect(mockAuthApi.getMe).toHaveBeenCalledWith("access-123");
+    expect(result.current.user).toMatchObject(mockUser);
+    expect(mockAuthApi.getMe).toHaveBeenCalledWith();
   });
 
   it("login sets user on success", async () => {
-    mockGetTokens.mockReturnValue(null);
+    mockAuthApi.getMe.mockRejectedValue(new Error("Unauthorized"));
     mockAuthApi.login.mockResolvedValue({
       ...mockUser,
-      accessToken: "access",
-      refreshToken: "refresh",
+      expiresAt: Math.floor(Date.now() / 1000) + 3600,
     });
 
     const { result } = renderHook(() => useAuth(), { wrapper });
@@ -125,7 +124,7 @@ describe("useAuth", () => {
   });
 
   it("login sets error on failure", async () => {
-    mockGetTokens.mockReturnValue(null);
+    mockAuthApi.getMe.mockRejectedValue(new Error("Unauthorized"));
     mockAuthApi.login.mockRejectedValue(new Error("Invalid credentials"));
 
     const { result } = renderHook(() => useAuth(), { wrapper });
@@ -146,19 +145,19 @@ describe("useAuth", () => {
   });
 
   it("logout clears user", async () => {
-    mockGetTokens.mockReturnValue({
-      accessToken: "access",
-      refreshToken: "refresh",
+    mockAuthApi.getMe.mockResolvedValue({
+      ...mockUser,
+      expiresAt: Math.floor(Date.now() / 1000) + 3600,
     });
-    mockAuthApi.getMe.mockResolvedValue(mockUser);
+    mockAuthApi.logout.mockResolvedValue();
 
     const { result } = renderHook(() => useAuth(), { wrapper });
 
     await waitFor(() => {
-      expect(result.current.user).toEqual(mockUser);
+      expect(result.current.user).toMatchObject(mockUser);
     });
 
-    act(() => {
+    await act(async () => {
       result.current.logout();
     });
 

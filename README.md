@@ -58,9 +58,7 @@ src/
 
 ## Security: Token Management
 
-Access and refresh tokens are stored in **sessionStorage** because we call DummyJSON directly from the browser. httpOnly cookies would require a backend proxy. sessionStorage clears when the tab closes, reducing exposure compared to localStorage.
-
-For production, use a **backend proxy** and **httpOnly cookies**. See [ARCHITECTURE.md](ARCHITECTURE.md) for full security details.
+Access and refresh tokens are stored in **httpOnly cookies** set by Next.js API routes (`/api/auth/*`). The client never reads or writes tokens; cookies are sent automatically with `credentials: 'include'`. This mitigates XSS token theft. See [ARCHITECTURE.md](ARCHITECTURE.md) for full security details.
 
 ## Documentation
 

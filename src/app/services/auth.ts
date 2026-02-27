@@ -1,27 +1,29 @@
-import type {
-  AuthUser,
-  LoginCredentials,
-  LoginResponse,
-} from "@/app/shared/types";
-import { clearTokens, setTokens } from "@/lib/auth/tokenStorage";
+import type { AuthUser, LoginCredentials } from "@/app/shared/types";
 
-const AUTH_BASE = "https://dummyjson.com/auth";
+type LoginApiResponse = AuthUser & { expiresAt?: number | null };
+type RefreshApiResponse = { expiresAt?: number | null };
+
+/** Base URL for API calls. Empty for same-origin relative URLs. */
+function getApiBase(): string {
+  return "";
+}
 
 /**
- * Posts credentials to DummyJSON /auth/login.
- * On success, stores tokens in sessionStorage and returns user + tokens.
- * Throws with API error message or status text when response is not ok.
+ * Posts credentials to /api/auth/login. On success, tokens are set as
+ * httpOnly cookies by the server. Returns user and optional expiresAt.
+ * Throws with API error message when response is not ok.
  */
 export async function login(
   credentials: LoginCredentials,
-): Promise<LoginResponse> {
-  const response = await fetch(`${AUTH_BASE}/login`, {
+): Promise<LoginApiResponse> {
+  const base = getApiBase();
+  const response = await fetch(`${base}/api/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    credentials: "include",
     body: JSON.stringify({
       username: credentials.username,
       password: credentials.password,
-      expiresInMins: 60,
     }),
   });
 
@@ -34,21 +36,21 @@ export async function login(
     );
   }
 
-  const data: LoginResponse = await response.json();
-  setTokens(data.accessToken, data.refreshToken);
-  return data;
+  return response.json();
 }
 
+export type GetMeResponse = AuthUser & { expiresAt?: number | null };
+
 /**
- * Fetches the current user from DummyJSON /auth/me using the access token.
- * Throws when the response is not ok.
+ * Fetches the current user from /api/auth/me. Cookies are sent automatically.
+ * Returns user and optional expiresAt for refresh scheduling.
+ * Throws when the response is not ok (e.g. 401).
  */
-export async function getMe(accessToken: string): Promise<AuthUser> {
-  const response = await fetch(`${AUTH_BASE}/me`, {
+export async function getMe(): Promise<GetMeResponse> {
+  const base = getApiBase();
+  const response = await fetch(`${base}/api/auth/me`, {
     method: "GET",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
+    credentials: "include",
   });
 
   if (!response.ok) {
@@ -58,40 +60,32 @@ export async function getMe(accessToken: string): Promise<AuthUser> {
   return response.json();
 }
 
-export type RefreshResponse = {
-  accessToken: string;
-  refreshToken: string;
-};
-
 /**
- * Refreshes tokens via DummyJSON /auth/refresh.
- * Stores new tokens in sessionStorage and returns them.
- * Throws when refresh fails.
+ * Refreshes tokens via /api/auth/refresh. Cookies are sent automatically.
+ * New tokens are set as httpOnly cookies by the server.
+ * Returns expiresAt for scheduling the next refresh.
  */
-export async function refreshToken(
-  refreshTokenValue: string,
-): Promise<RefreshResponse> {
-  const response = await fetch(`${AUTH_BASE}/refresh`, {
+export async function refreshToken(): Promise<RefreshApiResponse> {
+  const base = getApiBase();
+  const response = await fetch(`${base}/api/auth/refresh`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      refreshToken: refreshTokenValue,
-      expiresInMins: 60,
-    }),
+    credentials: "include",
   });
 
   if (!response.ok) {
     throw new Error(`Token refresh failed: ${response.statusText}`);
   }
 
-  const data: RefreshResponse = await response.json();
-  setTokens(data.accessToken, data.refreshToken);
-  return data;
+  return response.json();
 }
 
 /**
- * Clears access and refresh tokens from sessionStorage.
+ * Clears auth cookies via /api/auth/logout.
  */
-export function logout(): void {
-  clearTokens();
+export async function logout(): Promise<void> {
+  const base = getApiBase();
+  await fetch(`${base}/api/auth/logout`, {
+    method: "POST",
+    credentials: "include",
+  });
 }

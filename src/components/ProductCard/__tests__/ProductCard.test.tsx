@@ -8,7 +8,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { ProductCard } from "@/components/ProductCard";
 import { cartReducer } from "@/store/cartSlice";
 
-import type { Product } from "@/app/shared/types";
+import type { CartItem, Product } from "@/app/shared/types";
 
 const store = configureStore({
   reducer: { cart: cartReducer },
@@ -17,6 +17,14 @@ const store = configureStore({
 
 const renderWithProvider = (ui: React.ReactElement) =>
   render(<Provider store={store}>{ui}</Provider>);
+
+const renderWithCart = (ui: React.ReactElement, cartItems: CartItem[] = []) => {
+  const cartStore = configureStore({
+    reducer: { cart: cartReducer },
+    preloadedState: { cart: { items: cartItems } },
+  });
+  return render(<Provider store={cartStore}>{ui}</Provider>);
+};
 
 describe("ProductCard", () => {
   const defaultProps = {
@@ -136,5 +144,47 @@ describe("ProductCard", () => {
     );
     await userEvent.click(screen.getByRole("button", { name: /add to cart/i }));
     expect(onClick).not.toHaveBeenCalled();
+  });
+
+  it("shows cart indicator when product is in cart", () => {
+    const product: Product = {
+      id: "prod-in-cart",
+      name: "Test Product",
+      price: 9.99,
+      image: "https://example.com/image.jpg",
+      description: "Short description",
+      category: "beauty",
+    };
+    const cartItems: CartItem[] = [
+      {
+        productId: product.id,
+        quantity: 2,
+        name: product.name,
+        price: product.price,
+        image: product.image,
+      },
+    ];
+    renderWithCart(
+      <ProductCard {...defaultProps} product={product} />,
+      cartItems,
+    );
+    expect(screen.getByLabelText("In cart")).toBeInTheDocument();
+    expect(screen.getByTestId("product-card-in-cart")).toBeInTheDocument();
+  });
+
+  it("does not show cart indicator when product is not in cart", () => {
+    const product: Product = {
+      id: "prod-not-in-cart",
+      name: "Test Product",
+      price: 9.99,
+      image: "https://example.com/image.jpg",
+      description: "Short description",
+      category: "beauty",
+    };
+    renderWithCart(<ProductCard {...defaultProps} product={product} />, []);
+    expect(screen.queryByLabelText("In cart")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("product-card-in-cart"),
+    ).not.toBeInTheDocument();
   });
 });
