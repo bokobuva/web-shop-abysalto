@@ -62,6 +62,6 @@ Access and refresh tokens are stored in **httpOnly cookies** set by Next.js API 
 
 ## Documentation
 
-- **[ARCHITECTURE.md](ARCHITECTURE.md)** — Tech stack, data flow, auth, product listing, cart, Husky, security, accessibility
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** — Tech stack, data flow, auth, product listing, cart, Husky, CI/CD recommendations, security, accessibility
 - **[TESTS.md](TESTS.md)** — Test coverage details (~220 tests across 34 files)
 - JSDoc on shared utilities and services for editor IntelliSense

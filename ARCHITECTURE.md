@@ -208,6 +208,57 @@ We prefer clear, maintainable code. Example: `sortProducts` uses `SORT_OPTIONS` 
 - `sr-only` labels where needed
 - Storybook addon-a11y for checks during development
 
+## CI/CD and Pipeline Recommendations
+
+For future updates, consider a staged deployment pipeline with automated quality gates. This section outlines industry practices for senior frontend delivery.
+
+### Branch and Environment Strategy
+
+| Branch   | Environment | Purpose                                                    |
+|----------|-------------|------------------------------------------------------------|
+| `develop`| Development | Active feature development; deploys on push or PR merge    |
+| `qa`     | QA          | Integration testing, QA validation before preprod          |
+| `preprod`| Preprod     | Staging; mirrors production config and data for UAT       |
+| `main`   | Production  | Live production; protected, deploy via release only       |
+
+**Flow:** `develop` → `qa` (PR) → `preprod` (PR) → `main` (PR). Each promotion is gated by passing CI checks and optional approvals.
+
+### Quality Gates to Add
+
+| Tool           | Purpose                                                                 |
+|----------------|-------------------------------------------------------------------------|
+| **SonarQube**  | Static analysis: code smells, security hotspots, duplications, coverage; enforces quality profiles and gates before merge. |
+| **Lighthouse CI** | Performance, accessibility, best practices, SEO scores; fail builds when scores drop below thresholds (e.g. perf ≥ 90, a11y ≥ 95). |
+| **Chromatic**  | Visual regression for Storybook; catches unintended UI changes; run on PRs and gate merges. |
+| **Bundle analyzer** | Track bundle size; fail or warn on size increases to avoid regressions. |
+| **npm audit**  | Dependency vulnerability scanning; fail on high/critical; run on every build. |
+| **Dependabot / Renovate** | Automated dependency updates with grouped PRs; optional auto-merge for patch/minor. |
+| **Playwright / Cypress** | E2E smoke tests on critical flows (browse, add to cart, auth); run against `qa` and `preprod` deploys. |
+| **Semantic Release** | Automate versioning and changelogs from conventional commits; integrate with GitHub Releases. |
+
+### Suggested GitHub Actions Workflow Shape
+
+```yaml
+# Simplified conceptual flow
+on: [push, pull_request]
+jobs:
+  test:        # Jest, lint, typecheck
+  build:       # npm run build (required for Lighthouse)
+  lighthouse:  # Lighthouse CI against built preview
+  chromatic:   # Storybook build + Chromatic snapshot
+  sonar:       # SonarQube scan (requires SonarCloud or self-hosted)
+  e2e:         # Playwright against preview URL (QA/preprod)
+```
+
+Configure branch protection on `main` and `preprod` so merges require passing CI. Use environment-specific secrets for `qa`, `preprod`, and production.
+
+### Environment Configuration
+
+- **QA / Preprod:** Use distinct API base URLs, feature flags, or env vars (`NEXT_PUBLIC_API_BASE`, etc.) so each environment targets the correct backend.
+- **Production:** Strict CSP, HSTS, rate limiting; no debug logging or dev tools.
+
 ## Deployment
 
 The app deploys to Netlify via `@netlify/plugin-nextjs`. Build command: `npm run build`. The plugin handles the Next.js runtime; leave Publish directory blank in Netlify UI. Node 20 is set via `netlify.toml`.
+
+With the branch strategy above, configure Netlify (or similar) branch deploys: `develop` → dev URL, `qa` → qa URL, `preprod` → preprod URL, `main` → production domain.
