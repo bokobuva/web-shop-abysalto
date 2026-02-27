@@ -42,7 +42,7 @@ export const Modal: React.FC<ModalProps> = ({
       <div
         role="document"
         onClick={(e) => e.stopPropagation()}
-        className="fixed left-1/2 top-1/2 max-h-[90vh] w-full max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-auto rounded-sm border border-neutral-200 bg-white p-6 shadow-xl dark:border-neutral-700 dark:bg-neutral-800"
+        className="fixed left-1/2 top-1/2 max-h-[90vh] w-[90dvw] max-w-[90dvw] md:w-full md:max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-auto rounded-sm border border-neutral-200 bg-white p-6 shadow-xl dark:border-neutral-700 dark:bg-neutral-800"
       >
         {children}
         {!hideCloseButton && (
